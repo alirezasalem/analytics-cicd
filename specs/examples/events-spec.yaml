@@ -140,7 +140,34 @@ events:
         required: true
         example: "[{item_id: 'SKU-001', item_name: 'Widget Pro', price: 49.99, quantity: 1}]"
 
-  # ── 6. remove_from_cart ───────────────────────────────────────────────────
+  # ── 6. view_cart ──────────────────────────────────────────────────────────
+  # GA4 type: recommended ecommerce event
+  - name: view_cart
+    trigger: >
+      Fire on page load of /cart when the cart is non-empty.
+      Do NOT fire if the cart is empty.
+    priority: P1
+    notes: >
+      Fire once per page load. Guard against re-renders using a sessionStorage
+      flag: cart_viewed_{session_id}. Clear on session end.
+    parameters:
+      - name: currency
+        type: string
+        required: true
+        example: "EUR"
+      - name: value
+        type: number
+        required: true
+        example: 89.98
+      - name: item_count
+        type: number
+        required: true
+        example: 2
+      - name: items
+        type: array
+        required: true
+        example: "[{item_id: 'SKU-001', item_name: 'Widget Pro', price: 49.99, quantity: 1}]"
+    # ── 6. remove_from_cart ───────────────────────────────────────────────────
   # GA4 type: recommended ecommerce event
   - name: remove_from_cart
     trigger: >

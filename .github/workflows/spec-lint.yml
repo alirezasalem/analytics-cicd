@@ -1,41 +1,33 @@
 name: Spec Lint
-
 on:
   pull_request:
     paths:
       - "specs/**/*.yaml"
       - "conventions/conventions.yaml"
       - "scripts/linter/spec-linter.js"
-
 jobs:
   lint:
     name: Validate tracking specs
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Lint all specs in specs/
         run: |
           set -e
           FAILED=0
           SPECS=$(find specs/ -name "*.yaml" | sort)
-
           if [ -z "$SPECS" ]; then
             echo "No spec files found in specs/ — skipping."
             exit 0
           fi
-
           for spec in $SPECS; do
             echo ""
             echo "──────────────────────────────────────"
@@ -43,7 +35,6 @@ jobs:
             echo "──────────────────────────────────────"
             node scripts/linter/spec-linter.js "$spec" || FAILED=1
           done
-
           echo ""
           if [ $FAILED -eq 1 ]; then
             echo "❌ One or more specs failed validation. Merge blocked."
@@ -51,5 +42,3 @@ jobs:
           else
             echo "✅ All specs passed validation."
           fi
-        env:
-          CONVENTIONS_PATH: conventions/conventions.yaml

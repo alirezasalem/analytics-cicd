@@ -1,0 +1,27 @@
+{
+  "name": "analytics-cicd",
+  "version": "1.0.0",
+  "description": "> AI-native analytics pipeline — from feature brief to validated production tracking, with zero manual toil.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alirezasalem/analytics-cicd.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alirezasalem/analytics-cicd/issues"
+  },
+  "homepage": "https://github.com/alirezasalem/analytics-cicd#readme",
+  "dependencies": {
+    "js-yaml": "^4.1.1"
+  }
+}
