@@ -1,0 +1,333 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# conventions.yaml
+# Analytics CI/CD — Naming & Structure Conventions
+#
+# This file is the single source of truth for all tracking specs in this repo.
+# The spec linter (scripts/linter/spec-linter.js) enforces every rule defined here.
+# Human reviewers should not approve a spec PR that the linter rejects.
+#
+# Version: 1.0.0
+# Owner:   Web Analyst
+# Updated: 2026-04-17
+# ─────────────────────────────────────────────────────────────────────────────
+
+meta:
+  version: "1.0.0"
+  description: >
+    Naming conventions, structural rules, and validation constraints for all
+    analytics tracking specs. Used by both the spec linter (CI) and the AI
+    agent (spec generation). Any deviation requires an ADR in docs/decisions/.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. EVENT NAMES
+# ─────────────────────────────────────────────────────────────────────────────
+event_names:
+  format: snake_case
+  max_length: 40
+  min_length: 3
+
+  # Pattern that every event name must match
+  pattern: "^[a-z][a-z0-9_]*[a-z0-9]$"
+  pattern_description: >
+    Lowercase letters, digits, and underscores only.
+    Must start with a letter. Must not start or end with an underscore.
+    No consecutive underscores.
+
+  forbidden_prefixes:
+    - "gtm_"       # Reserved for GTM internal use
+    - "ga_"        # Reserved for GA4 automatic events
+    - "firebase_"  # Reserved for Firebase SDK
+    - "debug_"     # Not allowed in production specs
+    - "_"          # No leading underscores
+
+  forbidden_suffixes:
+    - "_v2"        # Use versioned spec files instead of renaming events
+    - "_new"
+    - "_old"
+    - "_temp"
+    - "_test"
+
+  forbidden_patterns:
+    - "__"         # No consecutive underscores
+    - "click$"     # Too generic — must describe the object: button_click → cta_click
+    - "^event_"    # Redundant prefix
+
+  # Events that are RESERVED — they exist in the spec but come from
+  # the GA4 / dataLayer auto-collection layer. Do not redefine them.
+  reserved_auto_collected:
+    - page_view       # Collected by gtag automatically — spec entry allowed but no custom trigger
+    - session_start
+    - first_visit
+    - user_engagement
+
+  # Approved event name allowlist for this project.
+  # The linter warns (non-blocking) if an event name is not in this list.
+  # Add new events here via PR; the linter blocks unknown events in strict mode.
+  allowlist:
+    - page_view
+    - view_item
+    - add_to_cart
+    - remove_from_cart
+    - begin_checkout
+    - add_payment_info
+    - add_shipping_info
+    - purchase
+    - refund
+    - login
+    - sign_up
+    - search
+    - select_item
+    - view_item_list
+    - select_promotion
+    - view_promotion
+    - share
+    - add_to_wishlist
+    - filter_apply
+    - sort_apply
+    - form_start
+    - form_submit
+    - error_view
+    - chat_open
+    - chat_message_sent
+    - file_download
+    - outbound_click
+    - video_start
+    - video_complete
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. PARAMETER NAMES
+# ─────────────────────────────────────────────────────────────────────────────
+parameter_names:
+  format: snake_case
+  max_length: 40
+  pattern: "^[a-z][a-z0-9_]*[a-z0-9]$"
+  pattern_description: >
+    Same rules as event names: lowercase snake_case, no leading/trailing
+    underscores, no consecutive underscores.
+
+  forbidden_prefixes:
+    - "ga_"
+    - "gtm_"
+    - "firebase_"
+    - "ep."        # GA4 internal prefix for event params
+
+  forbidden_patterns:
+    - "__"
+    - "^param_"    # Redundant — all keys are parameters by definition
+
+  # GA4 reserved parameter names — these are collected automatically.
+  # You may reference them in specs but must not redefine their type.
+  reserved_ga4:
+    - page_location
+    - page_referrer
+    - page_title
+    - language
+    - screen_resolution
+    - engagement_time_msec
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. DATA TYPES
+# ─────────────────────────────────────────────────────────────────────────────
+data_types:
+  # These are the ONLY allowed values for the `type` field on any parameter.
+  allowed:
+    - string
+    - number
+    - boolean
+    - array
+    - object
+    - currency   # Special alias: number with ISO 4217 currency context
+    - enum       # String constrained to a fixed set of values
+
+  # When type is `enum`, the spec MUST include a `values` list
+  enum_requires_values: true
+
+  # When type is `currency`, the spec MUST include a `currency_param` sibling
+  # that names the parameter carrying the ISO 4217 currency code (e.g. "currency")
+  currency_requires_sibling: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. REQUIRED FIELDS — Spec-level (top of each spec YAML)
+# ─────────────────────────────────────────────────────────────────────────────
+spec_required_fields:
+  - spec_id       # e.g. SPEC-001 — must match pattern ^SPEC-\d{3}$
+  - spec_version  # semver: 1.0.0
+  - status        # draft | review | approved | deprecated
+  - feature_brief # reference to the FB ID this spec implements, e.g. FB-001
+  - owner         # team or person accountable for this spec
+  - created_at    # ISO 8601 date: 2026-04-17
+  - updated_at    # ISO 8601 date
+  - events        # the array of event definitions
+
+spec_id_pattern: "^SPEC-\\d{3}$"
+spec_version_pattern: "^\\d+\\.\\d+\\.\\d+$"
+
+status_allowed_values:
+  - draft
+  - review
+  - approved
+  - deprecated
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. REQUIRED FIELDS — Per event entry
+# ─────────────────────────────────────────────────────────────────────────────
+event_required_fields:
+  - name          # The event name — validated against section 1
+  - trigger       # Plain English: when exactly this event fires
+  - priority      # P0 | P1 | P2
+  - parameters    # Array of parameter objects (can be empty array [])
+  - notes         # Implementation notes, edge cases, deduplication rules
+
+priority_allowed_values:
+  - P0    # Blocking — must work before launch
+  - P1    # Important — must work within sprint
+  - P2    # Nice to have — next sprint
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. REQUIRED FIELDS — Per parameter entry
+# ─────────────────────────────────────────────────────────────────────────────
+parameter_required_fields:
+  - name          # Parameter name — validated against section 2
+  - type          # Data type — validated against section 3
+  - required      # boolean: is this param required for the event to be valid?
+  - example       # At least one concrete example value (not null, not "TODO")
+
+parameter_forbidden_examples:
+  - "TODO"
+  - "todo"
+  - "TBD"
+  - "tbd"
+  - "FIXME"
+  - "null"
+  - ""
+  - "example"
+  - "test"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 7. ECOMMERCE OBJECT RULES
+# ─────────────────────────────────────────────────────────────────────────────
+ecommerce:
+  # Events that MUST include an `items` array parameter
+  requires_items_array:
+    - add_to_cart
+    - remove_from_cart
+    - begin_checkout
+    - purchase
+    - select_item
+    - view_item_list
+    - add_payment_info
+    - add_shipping_info
+    - refund
+
+  # Required fields within each item object
+  item_required_fields:
+    - item_id     # string — product SKU or unique ID
+    - item_name   # string — human-readable product name
+    - price       # number — unit price excluding tax
+
+  item_recommended_fields:
+    - item_brand
+    - item_category
+    - item_variant
+    - quantity
+    - currency
+
+  # Events that MUST include a top-level `value` and `currency` parameter
+  requires_value_currency:
+    - purchase
+    - begin_checkout
+    - add_payment_info
+    - add_shipping_info
+
+  # `transaction_id` is required on purchase and refund
+  requires_transaction_id:
+    - purchase
+    - refund
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 8. LINTER BEHAVIOUR
+# ─────────────────────────────────────────────────────────────────────────────
+linter:
+  # Errors = exit code 1 — block merge
+  # Warnings = exit code 0 — allow merge, logged to CI output
+
+  strict_mode: false
+  # When true: event names NOT in allowlist → error (not warning)
+  # Toggle to true for production specs once allowlist is stable
+
+  rules:
+    event_name_format:
+      severity: error
+      description: Event name must match the pattern in section 1
+
+    event_name_length:
+      severity: error
+      description: Event name must be between min_length and max_length chars
+
+    event_name_forbidden_prefix:
+      severity: error
+      description: Event name must not start with a reserved prefix
+
+    event_name_forbidden_suffix:
+      severity: error
+      description: Event name must not end with a reserved suffix
+
+    event_name_forbidden_pattern:
+      severity: error
+      description: Event name must not contain a forbidden pattern
+
+    event_name_not_in_allowlist:
+      severity: warning   # becomes error in strict_mode
+      description: Event name is not in the approved allowlist — open a PR to add it
+
+    parameter_name_format:
+      severity: error
+      description: Parameter name must match the pattern in section 2
+
+    parameter_type_invalid:
+      severity: error
+      description: Parameter type must be one of the allowed types in section 3
+
+    parameter_enum_missing_values:
+      severity: error
+      description: Parameters of type enum must include a `values` list
+
+    parameter_example_forbidden:
+      severity: error
+      description: Parameter example must not be a placeholder value (TODO, TBD, etc.)
+
+    spec_missing_required_field:
+      severity: error
+      description: Spec is missing a top-level required field
+
+    event_missing_required_field:
+      severity: error
+      description: Event entry is missing a required field
+
+    parameter_missing_required_field:
+      severity: error
+      description: Parameter entry is missing a required field
+
+    ecommerce_missing_items:
+      severity: error
+      description: Ecommerce event must include an `items` array parameter
+
+    ecommerce_missing_value_currency:
+      severity: error
+      description: Event must include top-level `value` and `currency` parameters
+
+    ecommerce_missing_transaction_id:
+      severity: error
+      description: purchase/refund events must include a `transaction_id` parameter
+
+    spec_id_format:
+      severity: error
+      description: spec_id must match SPEC-NNN format
+
+    spec_version_format:
+      severity: error
+      description: spec_version must be valid semver (e.g. 1.0.0)
+
+    status_invalid:
+      severity: error
+      description: status must be one of the allowed values
