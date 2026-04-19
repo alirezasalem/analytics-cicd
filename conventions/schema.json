@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/alirezasalem/analytics-cicd/conventions/schema.json",
+  "title": "Analytics Tracking Spec",
+  "description": "JSON Schema for analytics tracking spec YAML files. Encodes the same rules as conventions.yaml. Used by IDEs (VS Code YAML extension) for inline validation.",
+  "type": "object",
+  "required": [
+    "spec_id",
+    "spec_version",
+    "status",
+    "feature_brief",
+    "owner",
+    "created_at",
+    "updated_at",
+    "events"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "spec_id": {
+      "type": "string",
+      "pattern": "^SPEC-\\d{3}$",
+      "description": "Unique spec identifier. Format: SPEC-NNN (e.g. SPEC-001)",
+      "examples": ["SPEC-001", "SPEC-042"]
+    },
+    "spec_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of this spec. Bump minor for new params, major for renamed/removed events.",
+      "examples": ["1.0.0", "1.2.0", "2.0.0"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "review", "approved", "deprecated"],
+      "description": "Lifecycle status. Only 'approved' specs are implemented by engineers."
+    },
+    "feature_brief": {
+      "type": "string",
+      "pattern": "^FB-\\d{3}$",
+      "description": "Reference to the feature brief this spec implements. Format: FB-NNN",
+      "examples": ["FB-001"]
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Team or person accountable for this spec.",
+      "examples": ["Web Analytics Team", "Alireza Salem"]
+    },
+    "created_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO 8601 date when this spec was first created.",
+      "examples": ["2026-04-17"]
+    },
+    "updated_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO 8601 date of the last modification.",
+      "examples": ["2026-04-17"]
+    },
+    "events": {
+      "type": "array",
+      "description": "Array of event definitions. Must contain at least one event.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/event"
+      }
+    }
+  },
+  "definitions": {
+    "event": {
+      "type": "object",
+      "description": "A single tracked event definition.",
+      "required": ["name", "trigger", "priority", "parameters", "notes"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*[a-z0-9]$",
+          "minLength": 3,
+          "maxLength": 40,
+          "description": "GA4 event name in snake_case. Must match the approved allowlist in conventions.yaml.",
+          "examples": [
+            "purchase",
+            "add_to_cart",
+            "view_item",
+            "begin_checkout",
+            "login",
+            "search"
+          ]
+        },
+        "trigger": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Plain English description of exactly when this event fires. Must be precise enough for an engineer to implement without asking questions. Always tie to an API response or a confirmed state — never to a raw user click."
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["P0", "P1", "P2"],
+          "description": "P0 = blocks launch. P1 = must ship within sprint. P2 = nice to have."
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Edge cases, deduplication logic, PII handling, SPA routing notes. Anything that doesn't fit in the trigger."
+        },
+        "parameters": {
+          "type": "array",
+          "description": "Parameters sent with this event. Can be an empty array [] if the event carries no parameters beyond automatic ones.",
+          "items": {
+            "$ref": "#/definitions/parameter"
+          }
+        }
+      }
+    },
+    "parameter": {
+      "type": "object",
+      "description": "A single parameter within an event.",
+      "required": ["name", "type", "required", "example"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*[a-z0-9]$",
+          "maxLength": 40,
+          "description": "Parameter name in snake_case. No reserved prefixes (ga_, gtm_, ep.).",
+          "examples": [
+            "transaction_id",
+            "currency",
+            "value",
+            "item_id",
+            "search_term",
+            "method"
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "array", "object", "currency", "enum"],
+          "description": "Data type. Use 'number' for all numeric values (GA4 does not distinguish int from float). Use 'enum' when values are constrained to a fixed set — must include a 'values' list."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether this parameter is required for the event to be considered valid. Required params missing in production data will trigger a monitoring alert."
+        },
+        "example": {
+          "description": "A concrete, realistic example value. Must not be a placeholder (TODO, TBD, null, empty string).",
+          "not": {
+            "enum": ["TODO", "todo", "TBD", "tbd", "FIXME", "null", "", "example", "test"]
+          },
+          "examples": [
+            "ORDER-20260417-001",
+            "EUR",
+            49.99,
+            true,
+            "email",
+            "hydraulic pump"
+          ]
+        },
+        "values": {
+          "type": "array",
+          "description": "Required when type is 'enum'. Lists all valid values for this parameter.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "examples": [
+            ["email", "google", "linkedin", "apple", "sso"],
+            ["P0", "P1", "P2"]
+          ]
+        },
+        "currency_param": {
+          "type": "string",
+          "description": "Required when type is 'currency'. Names the sibling parameter that carries the ISO 4217 currency code.",
+          "examples": ["currency"]
+        }
+      }
+    }
+  }
+}
