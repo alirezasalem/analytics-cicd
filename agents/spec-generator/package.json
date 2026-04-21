@@ -1,0 +1,16 @@
+{
+  "name": "analytics-cicd-spec-generator",
+  "version": "1.0.0",
+  "description": "AI agent that reads conventions.yaml and generates valid analytics spec YAML from feature briefs",
+  "type": "module",
+  "main": "run.js",
+  "scripts": {
+    "generate": "node run.js"
+  },
+  "dependencies": {
+    "yaml": "^2.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

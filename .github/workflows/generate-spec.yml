@@ -1,0 +1,85 @@
+name: Generate Spec from Brief
+
+on:
+  push:
+    paths:
+      - "specs/briefs/FB-*.md"
+  workflow_dispatch:
+    inputs:
+      brief_file:
+        description: "Path to feature brief (e.g. specs/briefs/FB-009.md)"
+        required: true
+        type: string
+
+jobs:
+  generate-spec:
+    name: Generate analytics spec
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: agents/spec-generator/package-lock.json
+
+      - name: Install agent dependencies
+        working-directory: agents/spec-generator
+        run: npm ci
+
+      - name: Determine brief file
+        id: brief
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "file=${{ inputs.brief_file }}" >> "$GITHUB_OUTPUT"
+          else
+            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'specs/briefs/FB-*.md' | head -1)
+            echo "file=$CHANGED" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate spec YAML
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          BRIEF_FILE="${{ steps.brief.outputs.file }}"
+          BRIEF_NUM=$(echo "$BRIEF_FILE" | grep -oP '(?<=FB-)\d+')
+          YEAR=$(date +%Y)
+          SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $BRIEF_NUM).yaml"
+          echo "Brief : $BRIEF_FILE"
+          echo "Output: $SPEC_FILE"
+          node agents/spec-generator/run.js --brief-file "$BRIEF_FILE" > "$SPEC_FILE"
+          echo "spec_file=$SPEC_FILE" >> "$GITHUB_ENV"
+
+      - name: Lint generated spec
+        run: node scripts/lint-spec.js "${{ env.spec_file }}"
+
+      - name: Open PR with generated spec
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: "spec/auto-${{ steps.brief.outputs.file }}"
+          commit-message: "feat(spec): auto-generate ${{ env.spec_file }} from ${{ steps.brief.outputs.file }}"
+          title: "Auto-spec: ${{ env.spec_file }}"
+          body: |
+            ## Auto-generated spec
+
+            | Field | Value |
+            |---|---|
+            | Brief | `${{ steps.brief.outputs.file }}` |
+            | Spec | `${{ env.spec_file }}` |
+            | Generator | `claude-api` |
+            | Status | `draft` — awaiting analyst review |
+
+            **Next steps:**
+            1. Review spec for accuracy
+            2. Fill any `NEEDS_CLARIFICATION` fields
+            3. Approve and merge
+          labels: "spec,auto-generated,needs-review"

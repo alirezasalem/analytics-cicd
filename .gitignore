@@ -10,3 +10,6 @@ test-results/
 playwright-report/
 .DS_Store
 *.log
+
+# agent dependencies
+agents/spec-generator/node_modules/
