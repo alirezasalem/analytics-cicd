@@ -5,7 +5,7 @@ import { parse as parseYaml } from "yaml";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, "../../");
-const CONVENTIONS_PATH = resolve(REPO_ROOT, "conventions.yaml");
+const CONVENTIONS_PATH = resolve(REPO_ROOT, "conventions/conventions.yaml");
 
 export function readConventions() {
   if (!existsSync(CONVENTIONS_PATH)) {
