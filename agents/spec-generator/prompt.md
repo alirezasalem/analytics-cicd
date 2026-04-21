@@ -23,7 +23,7 @@ The YAML must:
 - Satisfy every `required` field listed in `conventions.yaml`
 - Use naming conventions exactly as defined (case, separators, prefixes)
 - Include a `spec_id` in the format `SPEC-{YYYY}-{NNN}` (use current year, increment from the highest existing ID if provided, otherwise start at 001)
-- Include a `generated_by: claude-mcp` field
+- Include a `generated_by: claude-api` field
 - Include a `status: draft` field (CI will promote it after review)
 
 ---
@@ -55,8 +55,8 @@ If the brief is too vague to fill a required field, use `"NEEDS_CLARIFICATION: <
 
 ## Example output shape
 
-spec_id: SPEC-2025-007
-generated_by: claude-mcp
+spec_id: SPEC-2026-007
+generated_by: claude-api
 status: draft
 title: "Product Detail Page — Add to Cart click"
 platform: web
