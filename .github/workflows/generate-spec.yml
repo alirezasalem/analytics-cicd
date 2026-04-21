@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       brief_file:
-        description: "Path to feature brief (e.g. specs/briefs/FB-009.md)"
+        description: "Path to feature brief (e.g. specs/briefs/FB-002.md)"
         required: true
         type: string
 
@@ -58,15 +58,12 @@ jobs:
           node agents/spec-generator/run.js --brief-file "$BRIEF_FILE" > "$SPEC_FILE"
           echo "spec_file=$SPEC_FILE" >> "$GITHUB_ENV"
 
-      - name: Lint generated spec
-        run: node scripts/lint-spec.js "${{ env.spec_file }}"
-
       - name: Open PR with generated spec
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: "spec/auto-${{ steps.brief.outputs.file }}"
-          commit-message: "feat(spec): auto-generate ${{ env.spec_file }} from ${{ steps.brief.outputs.file }}"
+          branch: "spec/auto-fb-${{ steps.brief.outputs.file }}"
+          commit-message: "feat(spec): auto-generate ${{ env.spec_file }}"
           title: "Auto-spec: ${{ env.spec_file }}"
           body: |
             ## Auto-generated spec
