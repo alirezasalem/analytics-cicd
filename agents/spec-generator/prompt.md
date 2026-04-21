@@ -22,7 +22,7 @@ Return **only** a YAML block. No preamble, no explanation, no markdown fences.
 The YAML must:
 - Satisfy every `required` field listed in `conventions.yaml`
 - Use naming conventions exactly as defined (case, separators, prefixes)
-- Include a `spec_id` in the format `SPEC-{YYYY}-{NNN}` (use current year, increment from the highest existing ID if provided, otherwise start at 001)
+- Include a `spec_id` in the format `SPEC-{YYYY}-{NNN}` (current year is 2026, increment from the highest existing ID if provided, otherwise start at 001)
 - Include a `generated_by: claude-api` field
 - Include a `status: draft` field (CI will promote it after review)
 
