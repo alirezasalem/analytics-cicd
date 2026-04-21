@@ -41,7 +41,8 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "file=${{ inputs.brief_file }}" >> "$GITHUB_OUTPUT"
           else
-            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'specs/briefs/FB-*.md' | head -1)
+            CHANGED=$(git diff --name-only HEAD~1 HEAD | grep '^specs/briefs/FB-.*\.md$' | head -1)
+            echo "Detected brief file: $CHANGED"
             echo "file=$CHANGED" >> "$GITHUB_OUTPUT"
           fi
 
