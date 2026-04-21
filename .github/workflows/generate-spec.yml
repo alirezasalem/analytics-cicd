@@ -46,17 +46,33 @@ jobs:
             echo "file=$CHANGED" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Generate spec YAML
+      - - name: Generate spec YAML
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           BRIEF_FILE="${{ steps.brief.outputs.file }}"
           BRIEF_NUM=$(echo "$BRIEF_FILE" | grep -oP '(?<=FB-)\d+')
           YEAR=$(date +%Y)
-          SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $BRIEF_NUM).yaml"
+
+          # Generate to a temp file first
+          TEMP_FILE="specs/temp-spec.yaml"
+          node agents/spec-generator/run.js --brief-file "$BRIEF_FILE" > "$TEMP_FILE"
+
+          # Extract first event name from generated YAML
+          EVENT_NAME=$(grep -m1 '^\s*- name:' "$TEMP_FILE" | sed 's/.*name:\s*//' | tr -d '"' | tr -d "'" | xargs)
+
+          # Build final filename: SPEC-2026-002-click_outbound_navigation.yaml
+          if [[ -n "$EVENT_NAME" ]]; then
+            SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $BRIEF_NUM)-${EVENT_NAME}.yaml"
+          else
+            SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $BRIEF_NUM).yaml"
+          fi
+
+          mv "$TEMP_FILE" "$SPEC_FILE"
+
           echo "Brief : $BRIEF_FILE"
+          echo "Event : $EVENT_NAME"
           echo "Output: $SPEC_FILE"
-          node agents/spec-generator/run.js --brief-file "$BRIEF_FILE" > "$SPEC_FILE"
           echo "spec_file=$SPEC_FILE" >> "$GITHUB_ENV"
 
       - name: Open PR with generated spec
