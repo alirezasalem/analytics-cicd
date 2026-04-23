@@ -22,7 +22,7 @@ Return **only** a YAML block. No preamble, no explanation, no markdown fences.
 The YAML must:
 - Satisfy every `required` field listed in `conventions.yaml`
 - Use naming conventions exactly as defined (case, separators, prefixes)
-- Include a `spec_id` in the format `SPEC-{YYYY}-{NNN}` (current year is 2026, increment from the highest existing ID if provided, otherwise start at 001)
+- Include a `spec_id` in the format `SPEC-{NNN}` (current year is 2026, increment from the highest existing ID if provided, otherwise start at 001)
 - Include a `generated_by: claude-api` field
 - Include a `status: draft` field (CI will promote it after review)
 
@@ -45,7 +45,7 @@ Before returning YAML, verify:
 - [ ] All required fields present
 - [ ] No snake_case violations (no spaces, no camelCase, no hyphens in event/param names)
 - [ ] GTM trigger/variable names follow Title Case pattern
-- [ ] `spec_id` is well-formed
+- [ ] `_id` is well-formed
 - [ ] `platform` is one of: `web`, `app`, `both`
 - [ ] `priority` is one of: `p0`, `p1`, `p2`
 
@@ -55,7 +55,7 @@ If the brief is too vague to fill a required field, use `"NEEDS_CLARIFICATION: <
 
 ## Example output shape
 
-spec_id: SPEC-YYYY-NNN
+spec_id: SPEC-001
 generated_by: claude-api
 status: draft
 title: "Product Detail Page — Add to Cart click"
