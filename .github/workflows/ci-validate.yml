@@ -13,5 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install linter dependencies
+        working-directory: scripts/linter
+        run: npm install
       - name: Run spec linter
         run: node scripts/linter/spec-linter.js
