@@ -22,7 +22,7 @@ Return **only** a YAML block. No preamble, no explanation, no markdown fences.
 The YAML must:
 - Satisfy every `required` field listed in `conventions.yaml`
 - Use naming conventions exactly as defined (case, separators, prefixes)
-- Include a `spec_id` in the format `SPEC-NNN` where NNN is a zero-padded 3-digit number (e.g. `SPEC-001`, `SPEC-002`). Do NOT include the year. Do NOT use `SPEC-2026-001` — that is wrong.
+- Include a `spec_id` in the format `SPEC-YYYY-NNN-feature-name` where YYYY is the current year (2026), NNN is a zero-padded 3-digit number starting at 001, and feature-name is a short snake_case slug of the feature (e.g. `SPEC-2026-001-view_cart`, `SPEC-2026-002-checkout_flow`).
 - Include a `generated_by: claude-api` field
 - Include a `status: draft` field (CI will promote it after review)
 
