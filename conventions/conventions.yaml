@@ -159,7 +159,7 @@ spec_required_fields:
   - updated_at    # ISO 8601 date
   - events        # the array of event definitions
 
-spec_id_pattern: "^SPEC-\\d{3}$"
+spec_id_pattern: "^SPEC-.+"
 spec_version_pattern: "^\\d+\\.\\d+\\.\\d+$"
 
 status_allowed_values:
