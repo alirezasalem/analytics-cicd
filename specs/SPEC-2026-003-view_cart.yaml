@@ -1,0 +1,51 @@
+spec_id: SPEC-2026-001
+generated_by: claude-api
+status: draft
+spec_version: 1.0.0
+feature_brief: FB-cart-page-view-tracking
+owner: Commerce
+created_at: 2026-04-17
+updated_at: 2026-04-17
+
+events:
+  - name: view_cart
+    trigger: "On page load of /cart when cart contains at least one item"
+    priority: P1
+    parameters:
+      - name: value
+        type: currency
+        required: true
+        example: 149.99
+      - name: currency
+        type: string
+        required: true
+        example: "EUR"
+      - name: items
+        type: array
+        required: true
+        example: 
+          - item_id: "SKU12345"
+            item_name: "Wireless Headphones"
+            price: 99.99
+            quantity: 1
+            item_brand: "TechCorp"
+            item_category: "Electronics"
+      - name: item_count
+        type: number
+        required: true
+        example: 3
+      - name: coupon_code
+        type: string
+        required: false
+        example: "SAVE10"
+    notes: >
+      Fire once per page load only. Use sessionStorage flag cart_viewed_{session_id} 
+      to prevent multiple fires on SPA re-renders. Do not fire if cart is empty. 
+      Guard against firing before cart state is fully loaded from API.
+
+acceptance_criteria:
+  - "Event fires only once per cart page load session"
+  - "Event does not fire if cart items array is empty"
+  - "value parameter matches the sum of all (item price × quantity)"
+  - "items array contains all cart items with required ecommerce fields"
+  - "Verified in GA4 DebugView before merge"
