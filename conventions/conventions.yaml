@@ -49,7 +49,6 @@ event_names:
 
   forbidden_patterns:
     - "__"         # No consecutive underscores
-    - "click$"     # Too generic — must describe the object: button_click → cta_click
     - "^event_"    # Redundant prefix
 
   # Events that are RESERVED — they exist in the spec but come from
