@@ -1,0 +1,55 @@
+spec_id: SPEC-008
+generated_by: claude-api
+status: draft
+spec_version: 1.0.0
+feature_brief: FB-cart-page-view
+owner: Commerce
+created_at: 2026-04-17
+updated_at: 2026-04-17
+
+events:
+  - name: view_cart
+    trigger: "User navigates to /cart page with at least one item in cart"
+    priority: P1
+    parameters:
+      - name: value
+        type: currency
+        required: true
+        example: 127.50
+        currency_param: currency
+      - name: currency
+        type: string
+        required: true
+        example: "EUR"
+      - name: item_count
+        type: number
+        required: true
+        example: 3
+      - name: items
+        type: array
+        required: true
+        example: 
+          - item_id: "SKU-12345"
+            item_name: "Wireless Headphones"
+            price: 89.99
+            quantity: 1
+            item_category: "Electronics"
+            discount_amount: 0
+          - item_id: "SKU-67890"
+            item_name: "Phone Case"
+            price: 18.75
+            quantity: 2
+            item_category: "Accessories"
+            discount_amount: 2.50
+      - name: coupon_code
+        type: string
+        required: false
+        example: "SAVE10"
+      - name: page_location
+        type: string
+        required: true
+        example: "https://example.com/cart"
+    notes: >
+      Fire once per page load only using sessionStorage flag cart_viewed_{session_id}.
+      Skip entirely if cart is empty. Guard against SPA re-renders.
+      Use same cart state object as checkout flow for value consistency.
