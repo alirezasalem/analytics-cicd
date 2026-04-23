@@ -1,0 +1,36 @@
+spec_id: SPEC-2026-001-cart_page_view
+generated_by: claude-api
+status: draft
+spec_version: 1.0.0
+feature_brief: FB-ecommerce-tracking
+owner: Commerce
+created_at: 2026-04-17
+updated_at: 2026-04-17
+
+events:
+  - name: view_cart
+    trigger: "On page load of /cart when cart contains at least one item"
+    priority: P1
+    parameters:
+      - name: currency
+        type: string
+        required: true
+        example: "EUR"
+      - name: value
+        type: currency
+        required: true
+        example: 145.99
+        currency_param: currency
+      - name: items
+        type: array
+        required: true
+        example: [{"item_id": "SKU123", "item_name": "Blue Sneakers", "price": 89.99, "quantity": 1}, {"item_id": "SKU456", "item_name": "Cotton T-Shirt", "price": 28.00, "quantity": 2}]
+      - name: item_count
+        type: number
+        required: true
+        example: 3
+      - name: coupon
+        type: string
+        required: false
+        example: "SUMMER20"
+    notes: "Fire once per page load only. Use sessionStorage flag cart_viewed_{session_id} to prevent duplicate firing on SPA re-renders. Do not fire if cart is empty (items array length = 0). Guard against session expiry edge cases by checking cart state before firing."
