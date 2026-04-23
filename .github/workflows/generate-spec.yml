@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -41,8 +43,12 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "file=${{ inputs.brief_file }}" >> "$GITHUB_OUTPUT"
           else
-            CHANGED=$(git diff --name-only HEAD~1 HEAD | grep '^specs/briefs/FB-.*\.md$' | head -1)
+            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'specs/briefs/' | grep '^specs/briefs/FB-.*\.md$' | head -1)
             echo "Detected brief file: $CHANGED"
+            if [[ -z "$CHANGED" ]]; then
+              echo "ERROR: No FB-*.md brief file detected in this commit"
+              exit 1
+            fi
             echo "file=$CHANGED" >> "$GITHUB_OUTPUT"
           fi
 
