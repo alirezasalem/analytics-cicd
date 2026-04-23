@@ -14,4 +14,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run spec linter
-        run: node scripts/lint-spec.js
+        run: node scripts/linter/spec-linter.js
