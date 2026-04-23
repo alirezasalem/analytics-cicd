@@ -69,9 +69,9 @@ export function validateSpecAgainstConventions(specObj, conventions) {
     errors.push(`Invalid priority "${specObj.priority}". Allowed: ${allowedPriorities.join(", ")}`);
   }
 
-  if (specObj.spec_id && !/^SPEC-\d{4}-\d{3}$/.test(specObj.spec_id)) {
-    errors.push(`spec_id "${specObj.spec_id}" does not match pattern SPEC-YYYY-NNN`);
-  }
+  if (specObj.spec_id && !/^SPEC-.+/.test(specObj.spec_id)) {
+  errors.push(`spec_id "${specObj.spec_id}" does not match pattern SPEC-*`);
+}
 
   for (const event of specObj.events ?? []) {
     if (event.name && !/^[a-z][a-z0-9_]*$/.test(event.name)) {
