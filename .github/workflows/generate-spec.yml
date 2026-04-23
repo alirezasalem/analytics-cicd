@@ -46,7 +46,7 @@ jobs:
             echo "file=$CHANGED" >> "$GITHUB_OUTPUT"
           fi
 
-      - - name: Generate spec YAML
+      - name: Generate spec YAML
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
