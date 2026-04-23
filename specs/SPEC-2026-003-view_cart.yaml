@@ -1,0 +1,44 @@
+spec_id: SPEC-2026-001
+generated_by: claude-api
+status: draft
+spec_version: 1.0.0
+feature_brief: FB-ecommerce-tracking
+owner: Commerce
+created_at: 2026-04-17
+updated_at: 2026-04-17
+
+events:
+  - name: view_cart
+    trigger: "Page load of /cart when cart contains at least one item"
+    priority: P1
+    parameters:
+      - name: value
+        type: currency
+        required: true
+        currency_param: currency
+        example: 89.97
+      - name: currency
+        type: string
+        required: true
+        example: EUR
+      - name: items
+        type: array
+        required: true
+        example:
+          - item_id: "SKU-12345"
+            item_name: "Wireless Headphones"
+            price: 49.99
+            quantity: 1
+          - item_id: "SKU-67890"
+            item_name: "Phone Case"
+            price: 19.99
+            quantity: 2
+      - name: item_count
+        type: number
+        required: true
+        example: 3
+      - name: coupon
+        type: string
+        required: false
+        example: "SAVE10"
+    notes: "Fire once per page load only. Use sessionStorage flag cart_viewed_{session_id} to prevent duplicate fires on SPA re-renders. Clear flag on session end. Do not fire if cart is empty."
