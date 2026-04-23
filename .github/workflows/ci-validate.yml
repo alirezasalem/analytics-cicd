@@ -16,5 +16,9 @@ jobs:
       - name: Install linter dependencies
         working-directory: scripts/linter
         run: npm install
-      - name: Run spec linter
-        run: node scripts/linter/spec-linter.js
+      - - name: Run spec linter
+        run: |
+          for f in specs/*.yaml; do
+            [ -f "$f" ] || continue
+            node scripts/linter/spec-linter.js "$f"
+          done
