@@ -1,5 +1,0 @@
-add to cart event when the product is successfully added to the cart and network response is recived.
-item parameters as GA4 standard parameters.
-item name, id, category, price, discount, color, size, variant
-
-owner: alirea salemi
