@@ -62,7 +62,7 @@ jobs:
 
           # Generate to a temp file first
           TEMP_FILE="specs/temp-spec.yaml"
-          node agents/spec-generator/run.js --brief-file "$BRIEF_FILE" > "$TEMP_FILE"
+          node agents/spec-generator/run.js --brief-file "$BRIEF_FILE" > "$TEMP_FILE" 2>&1 || (cat "$TEMP_FILE" && exit 1)
 
           # Extract first event name from generated YAML
           EVENT_NAME=$(grep -m1 '^\s*- name:' "$TEMP_FILE" | sed 's/.*name:\s*//' | tr -d '"' | tr -d "'" | xargs)
