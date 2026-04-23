@@ -1,0 +1,17 @@
+name: CI Validate
+
+on:
+  push:
+    paths:
+      - "specs/**/*.yaml"
+  pull_request:
+    paths:
+      - "specs/**/*.yaml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run spec linter
+        run: node scripts/lint-spec.js
