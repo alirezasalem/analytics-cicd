@@ -19,7 +19,7 @@ import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import yaml from 'yaml';
-import { loadConventions } from './conventions_reader.js';
+import { readConventions } from './conventions_reader.js';
 import {
   config,
   agentModel,
@@ -65,7 +65,7 @@ try {
   process.exit(1);
 }
 
-const conventions = loadConventions();
+const conventions = readConventions();
 
 // ── Build the full prompt ─────────────────────────────────────────────────────
 const specIdExample = sequence
