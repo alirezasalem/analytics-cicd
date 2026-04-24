@@ -147,7 +147,8 @@ const yamlText = rawText
 // ── Validate output is parseable YAML ────────────────────────────────────────
 let parsedSpec;
 try {
-  parsedSpec = yaml.parse(yamlText);
+  const sanitizedYaml = yamlText.replace(/NEEDS_CLARIFICATION: ([^"\n][^\n]*)/g, "NEEDS_CLARIFICATION: '$1'");
+  parsedSpec = yaml.parse(sanitizedYaml);
 } catch (err) {
   console.error(`[spec-generator] ✗ Claude returned invalid YAML: ${err.message}`);
   console.error('--- Raw output ---');
