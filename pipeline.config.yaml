@@ -1,0 +1,179 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# pipeline.config.yaml
+# Analytics CI/CD — Central Pipeline Configuration
+#
+# THE SINGLE SOURCE OF TRUTH for all pipeline-level settings.
+#
+# Do NOT hardcode any of these values in:
+#   - agents/spec-generator/prompt.md
+#   - agents/spec-generator/run.js
+#   - scripts/linter/spec-linter.js
+#   - scripts/codegen/generate-artifacts.js
+#   - tests/playwright/*.js
+#   - .github/workflows/*.yml
+#
+# To change a setting → edit here → commit → every component picks it up
+# automatically. No other files need to change.
+#
+# Owner:   Web Analytics Team
+# Version: 1.0.0
+# ─────────────────────────────────────────────────────────────────────────────
+
+meta:
+  version: "1.0.0"
+  project: "analytics-cicd"
+  owner: "Web Analytics Team"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. SPEC IDENTITY & NAMING
+#
+# The full spec_id is assembled as:
+#   {id_prefix}-{year}-{sequence_padded}-{event_name_slug}
+# Example: SPEC-2026-003-view_cart
+# ─────────────────────────────────────────────────────────────────────────────
+spec:
+  id_prefix: "SPEC"
+  year_source: "current"        # "current" = runtime year | "fixed" = use year_fixed
+  year_fixed: 2026              # only used when year_source is "fixed"
+  sequence_digits: 3            # zero-padded, e.g. 003
+  include_event_slug: true      # append event name to spec_id for readability
+  event_slug_separator: "-"     # separator between sequence and event slug
+
+  # Filename is derived from spec_id automatically
+  # Example: SPEC-2026-003-view_cart.yaml
+  file_extension: ".yaml"
+
+  # Allowed status values — any other value fails the linter
+  allowed_statuses:
+    - draft
+    - review
+    - approved
+    - deprecated
+
+  # Fields every spec MUST contain (linter enforces this)
+  required_fields:
+    - spec_id
+    - version
+    - status
+    - owner
+    - feature_brief_ref
+    - generated_by
+    - created_at
+    - events
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. VERSIONING
+# ─────────────────────────────────────────────────────────────────────────────
+versioning:
+  format: "semver"              # semver | date | sequential
+  initial: "1.0.0"
+  # Specs always start at initial version on generation.
+  # Bumping is a manual analyst action during review.
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. FILE PATHS
+# All paths are relative to the repo root.
+# Scripts and workflows import paths from lib/config-reader.js — never hardcode.
+# ─────────────────────────────────────────────────────────────────────────────
+paths:
+  specs_output_dir:   "specs/"
+  briefs_input_dir:   "specs/briefs/"
+  conventions_file:   "conventions/conventions.yaml"
+  pipeline_config:    "pipeline.config.yaml"
+  linter_script:      "scripts/linter/spec-linter.js"
+  codegen_script:     "scripts/codegen/generate-artifacts.js"
+  generator_prompt:   "agents/spec-generator/prompt.md"
+  generator_run:      "agents/spec-generator/run.js"
+  playwright_tests:   "tests/playwright/"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. FEATURE BRIEF SETTINGS
+# ─────────────────────────────────────────────────────────────────────────────
+feature_briefs:
+  # Brief filenames must match this pattern so CI can detect them correctly
+  filename_pattern: "^FB-\\d{3}.*\\.(md|txt)$"   # e.g. FB-001-cart-tracking.md
+  filename_example: "FB-001-cart-tracking.md"
+  sequence_digits: 3
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. AI AGENT SETTINGS
+# ─────────────────────────────────────────────────────────────────────────────
+agent:
+  model: "claude-sonnet-4-20250514"
+  max_tokens: 4096
+  temperature: 0                # 0 = deterministic; best for structured YAML output
+
+  # When the agent can't infer a value from the brief, it writes this placeholder.
+  # The analyst knows exactly which fields need manual attention before approval.
+  clarification_placeholder: "NEEDS_CLARIFICATION"
+  clarification_format: "NEEDS_CLARIFICATION: {reason}"
+
+  # Written into every generated spec's generated_by field for traceability
+  generator_tag: "claude-api-agent"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. CI / GITHUB ACTIONS
+# ─────────────────────────────────────────────────────────────────────────────
+ci:
+  # Branch naming for generated spec PRs
+  spec_branch_prefix: "spec/"           # e.g. spec/SPEC-2026-003-view_cart
+  pr_label: "auto-generated-spec"
+  pr_draft: false                       # true = always open as draft PR
+
+  # Linter behaviour
+  linter_fail_on_warning: false         # warnings are informational; errors block CI
+  linter_fail_on_error: true
+
+  # These must be configured as required status checks in GitHub branch protection
+  required_checks:
+    - "Spec Lint"
+    - "CI Validate"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 7. ANALYTICS PLATFORM TARGETS
+# The agent uses these to apply the correct naming conventions and output format.
+# ─────────────────────────────────────────────────────────────────────────────
+platforms:
+  primary: "ga4"                # ga4 | amplitude | mixpanel | custom
+  gtm:
+    enabled: true
+    mode: "hybrid"              # client | server | hybrid
+  server_side:
+    enabled: true
+    endpoints:
+      - ga4
+      # add more endpoints here as your sGTM config grows
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 8. PLAYWRIGHT TEST SETTINGS
+# ─────────────────────────────────────────────────────────────────────────────
+playwright:
+  base_url: "https://staging.example.com"   # override via TEST_BASE_URL env var
+  dataLayer_variable: "window.dataLayer"
+  timeout_ms: 5000                          # how long to wait for a dataLayer push
+  # Spec fields that Playwright tests validate against the live dataLayer
+  validated_fields:
+    - event
+    - ecommerce
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 9. NOTIFICATIONS (fill in when ready)
+# ─────────────────────────────────────────────────────────────────────────────
+notifications:
+  slack:
+    enabled: false
+    channel: "#analytics-tracking"
+    # Store webhook URL as GitHub secret: SLACK_WEBHOOK_URL
+    notify_on:
+      - spec_generated
+      - lint_failure
+      - pr_merged
