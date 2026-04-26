@@ -74,9 +74,9 @@ jobs:
 
           # Build final filename: SPEC-2026-002-click_outbound_navigation.yaml
           if [[ -n "$EVENT_NAME" ]]; then
-            SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $BRIEF_NUM)-${EVENT_NAME}.yaml"
+            SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $((10#$BRIEF_NUM)))-${EVENT_NAME}.yaml"
           else
-            SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $BRIEF_NUM).yaml"
+            SPEC_FILE="specs/SPEC-${YEAR}-$(printf '%03d' $((10#$BRIEF_NUM))).yaml"
           fi
 
           mv "$TEMP_FILE" "$SPEC_FILE"
