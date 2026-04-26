@@ -1,0 +1,51 @@
+spec_id: SPEC-2026-006-select_item
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in feature brief
+feature_brief_ref: FB-006
+generated_by: claude-api-agent
+created_at: NEEDS_CLARIFICATION: timestamp will be set by pipeline
+platform: web
+priority: NEEDS_CLARIFICATION: priority not specified in feature brief
+
+events:
+  - name: select_item
+    trigger: "Product Card - Click - Select Item"
+    parameters:
+      product_id: "DL - product_id"
+      product_name: "DL - product_name"
+      price: "DL - price"
+      brand: "DL - brand"
+      category: "DL - category"
+      list_name: "DL - list_name"
+      list_position: "DL - list_position"
+      currency: "DL - currency"
+    dataLayer:
+      event: select_item
+      event_category: ecommerce
+      event_label: "{{DL - product_name}}"
+      product_id: "{{DL - product_id}}"
+      product_name: "{{DL - product_name}}"
+      price: "{{DL - price}}"
+      brand: "{{DL - brand}}"
+      category: "{{DL - category}}"
+      list_name: "{{DL - list_name}}"
+      list_position: "{{DL - list_position}}"
+      currency: EUR
+    ga4_mapping:
+      event_name: select_item
+      custom_dimensions:
+        cd_product_id: "{{DL - product_id}}"
+        cd_brand: "{{DL - brand}}"
+        cd_category: "{{DL - category}}"
+        cd_list_name: "{{DL - list_name}}"
+        cd_list_position: "{{DL - list_position}}"
+    gtm_notes: "Fire on all product card clicks site-wide. Use Click Element trigger targeting product card containers. Ensure list_name reflects page context and widget type."
+
+acceptance_criteria:
+  - "Event fires once per product card click, not on page load or navigation completion"
+  - "list_name accurately reflects page and widget context (e.g. 'Homepage - Recommendations', 'Search Results')"
+  - "list_position uses 1-based indexing (first product = 1)"
+  - "All product parameters populated from dataLayer before GTM fires"
+  - "Currency is always EUR as specified"
+  - "Verified in GA4 DebugView across all product card locations before merge"
