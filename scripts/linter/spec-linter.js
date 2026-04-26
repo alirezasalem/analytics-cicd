@@ -131,7 +131,7 @@ function lintSpec(filePath) {
       }
 
       // 5d. Parameter name validation
-      const params = event.parameters || [];
+      const params = Array.isArray(event.parameters) ? event.parameters : [];
       for (const param of params) {
         const pname = param.name || param.parameter_name;
         if (pname && !PARAM_PATTERN.test(pname)) {
