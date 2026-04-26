@@ -24,5 +24,6 @@
   "dependencies": {
     "js-yaml": "^4.1.1",
     "yaml": "^2.8.3"
-  }
+  },
+  "type": "module"
 }

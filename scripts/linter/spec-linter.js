@@ -30,10 +30,17 @@ let conventions;
 try {
   const raw = readFileSync(resolve(process.cwd(), config.paths.conventions_file), 'utf8');
   const sanitized = raw.replace(
+<<<<<<< HEAD
     /^(\s*[\w.]+\s*):\s*(NEEDS_CLARIFICATION:[^\n]+)$/gm,
     '$1: "$2"'
   );
   const parsed = yaml.parse(sanitized);
+=======
+  /^(\s*[\w.]+\s*):\s*(NEEDS_CLARIFICATION:[^\n]+)$/gm,
+  '$1: "$2"'
+);
+const parsed = yaml.parse(sanitized);
+>>>>>>> a9912e1 (fix(linter): sanitize NEEDS_CLARIFICATION values + add type module)
   conventions = yaml.parse(raw);
 } catch (err) {
   console.error(`[linter] ✗ Could not load conventions file: ${config.paths.conventions_file}`);
