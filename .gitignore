@@ -14,3 +14,5 @@ playwright-report/
 # agent dependencies
 agents/spec-generator/node_modules/
 agents/*/node_modules/
+agents/*/node_modules/
+agents/*/package-lock.json
