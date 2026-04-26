@@ -48,7 +48,11 @@ function loadSpec(relPath) {
     throw new Error(`Spec file not found: ${absPath}`);
   }
   const raw = readFileSync(absPath, "utf8");
-  const parsed = parseYaml(raw);
+  const sanitized = raw.replace(
+    /^(\s*[\w.]+\s*):\s*(NEEDS_CLARIFICATION:[^\n]+)$/gm,
+    '$1: "$2"'
+  );
+  const parsed = parseYaml(sanitized);
 
   if (!parsed.events || !Array.isArray(parsed.events)) {
     throw new Error("Spec must contain a top-level 'events' array.");
