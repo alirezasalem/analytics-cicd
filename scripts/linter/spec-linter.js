@@ -29,18 +29,6 @@ import {
 let conventions;
 try {
   const raw = readFileSync(resolve(process.cwd(), config.paths.conventions_file), 'utf8');
-  const sanitized = raw.replace(
-<<<<<<< HEAD
-    /^(\s*[\w.]+\s*):\s*(NEEDS_CLARIFICATION:[^\n]+)$/gm,
-    '$1: "$2"'
-  );
-  const parsed = yaml.parse(sanitized);
-=======
-  /^(\s*[\w.]+\s*):\s*(NEEDS_CLARIFICATION:[^\n]+)$/gm,
-  '$1: "$2"'
-);
-const parsed = yaml.parse(sanitized);
->>>>>>> a9912e1 (fix(linter): sanitize NEEDS_CLARIFICATION values + add type module)
   conventions = yaml.parse(raw);
 } catch (err) {
   console.error(`[linter] ✗ Could not load conventions file: ${config.paths.conventions_file}`);
@@ -63,12 +51,12 @@ function lintSpec(filePath) {
   // Parse YAML
   let spec;
   try {
+    const raw = readFileSync(filePath, 'utf8');
     const sanitized = raw.replace(
       /^(\s*[\w.]+\s*):\s*(NEEDS_CLARIFICATION:[^\n]+)$/gm,
       '$1: "$2"'
     );
-    const parsed = yaml.parse(sanitized);
-    spec = yaml.parse(readFileSync(filePath, 'utf8'));
+    spec = yaml.parse(sanitized);
   } catch (err) {
     errors.push(`Could not parse YAML: ${err.message}`);
     return { filePath, errors, warnings };
