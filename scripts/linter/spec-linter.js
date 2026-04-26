@@ -130,7 +130,7 @@ function lintSpec(filePath) {
         }
       }
 
-      // 5d. Parameter name validation
+      // 5d. Parameter name validation (only when parameters is an array of objects)
       const params = Array.isArray(event.parameters) ? event.parameters : [];
       for (const param of params) {
         const pname = param.name || param.parameter_name;
