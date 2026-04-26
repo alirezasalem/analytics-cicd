@@ -1,0 +1,45 @@
+spec_id: SPEC-2026-001-view_cart
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in feature brief
+feature_brief_ref: NEEDS_CLARIFICATION: feature brief reference ID not provided
+generated_by: claude-api-agent
+created_at: NEEDS_CLARIFICATION: timestamp will be set by pipeline
+title: "Cart Page View Tracking"
+platform: web
+priority: P1
+
+events:
+  - name: view_cart
+    trigger: "Cart - View - Page Load"
+    parameters:
+      cart_value: "DL - cart_value"
+      currency: "DL - currency"
+      item_count: "DL - item_count"
+      items: "DL - items"
+      coupon_code: "DL - coupon_code"
+      session_id: "DL - session_id"
+    dataLayer:
+      event: view_cart
+      event_category: ecommerce
+      event_label: "cart_review"
+      cart_value: "{{DL - cart_value}}"
+      currency: "{{DL - currency}}"
+      item_count: "{{DL - item_count}}"
+      items: "{{DL - items}}"
+      coupon_code: "{{DL - coupon_code}}"
+    ga4_mapping:
+      event_name: view_cart
+      custom_dimensions:
+        cd_cart_value: "{{DL - cart_value}}"
+        cd_item_count: "{{DL - item_count}}"
+        cd_coupon_code: "{{DL - coupon_code}}"
+    gtm_notes: "Fire on /cart page load only when cart contains items. Use sessionStorage flag cart_viewed_{session_id} to prevent duplicate fires on SPA re-renders."
+
+acceptance_criteria:
+  - "Event fires once per page load only when cart contains at least one item"
+  - "Event does not fire if cart is empty"
+  - "sessionStorage flag prevents duplicate fires on SPA re-renders"
+  - "cart_value matches the sum of all item prices × quantities"
+  - "items array contains complete product data for each cart item"
+  - "Verified in GA4 DebugView before merge"
