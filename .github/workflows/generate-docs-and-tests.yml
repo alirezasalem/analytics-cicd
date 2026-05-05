@@ -41,12 +41,12 @@ jobs:
       - name: Install doc-generator dependencies
         run: |
           cd agents/doc-generator
-          npm ci
+          npm install
 
       - name: Install test-generator dependencies
         run: |
           cd agents/test-generator
-          npm ci
+          npm install
 
       # ── Resolve which spec files to process ─────────────────────────────────
       - name: Resolve spec files
