@@ -1,0 +1,17 @@
+{
+  "name": "analytics-test-generator",
+  "version": "1.0.0",
+  "description": "A4 — Generates Playwright test files from analytics spec YAML via Claude API",
+  "type": "module",
+  "main": "run.js",
+  "scripts": {
+    "generate": "node run.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
