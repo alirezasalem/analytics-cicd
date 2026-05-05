@@ -1,15 +1,13 @@
-name: A4 — Validate dataLayer
+name: Validate dataLayer
 
-# Triggered on every PR to main — no path filter.
-# Runs ALL Playwright tests (full regression) against the TEST_URL in the PR description.
+# Triggered on every PR to main, or manually via workflow_dispatch.
+# Runs ALL Playwright tests (full regression) against the provided TEST_URL.
 # Catches regressions in previously-passing events, not just the new event.
 #
-# Required in PR description:
+# PR description convention:
 #   TEST_URL: https://preview.example.com/branch-name
-#
-# Optional (for password-protected staging environments):
-#   TEST_USERNAME: staging
-#   TEST_PASSWORD: abc123
+#   TEST_USERNAME: staging        (optional, for password-protected staging)
+#   TEST_PASSWORD: abc123         (optional)
 #
 # A5 (GTM config generation) only runs after this workflow passes.
 
@@ -17,6 +15,20 @@ on:
   pull_request:
     branches:
       - main
+
+  workflow_dispatch:
+    inputs:
+      test_url:
+        description: 'TEST_URL — live URL to run Playwright against'
+        required: true
+      test_username:
+        description: 'TEST_USERNAME — basic auth username (optional)'
+        required: false
+        default: ''
+      test_password:
+        description: 'TEST_PASSWORD — basic auth password (optional)'
+        required: false
+        default: ''
 
 jobs:
   validate-datalayer:
@@ -27,34 +39,37 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # ── Extract TEST_URL + optional credentials from PR description ──────────
-      - name: Extract TEST_URL and credentials from PR description
+      # ── Extract TEST_URL + optional credentials ──────────────────────────────
+      - name: Extract TEST_URL and credentials
         id: extract-url
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          TEST_URL=$(echo "$PR_BODY" | grep -oP '(?<=TEST_URL:\s)https?://[^\s]+' | head -1)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TEST_URL="${{ github.event.inputs.test_url }}"
+            TEST_USERNAME="${{ github.event.inputs.test_username }}"
+            TEST_PASSWORD="${{ github.event.inputs.test_password }}"
+          else
+            TEST_URL=$(echo "$PR_BODY" | grep -oP '(?<=TEST_URL:\s)https?://[^\s]+' | head -1)
+            TEST_USERNAME=$(echo "$PR_BODY" | grep -oP '(?<=TEST_USERNAME:\s)\S+' | head -1 || true)
+            TEST_PASSWORD=$(echo "$PR_BODY" | grep -oP '(?<=TEST_PASSWORD:\s)\S+' | head -1 || true)
+          fi
+
           if [ -z "$TEST_URL" ]; then
-            echo "::error::No TEST_URL found in PR description."
-            echo "::error::Add a line like:  TEST_URL: https://your-preview-url.com"
-            echo "::error::For protected staging, also add:"
-            echo "::error::  TEST_USERNAME: staging"
-            echo "::error::  TEST_PASSWORD: yourpassword"
+            echo "::error::No TEST_URL provided."
+            echo "::error::Via PR description: TEST_URL: https://your-preview-url.com"
+            echo "::error::Via manual trigger: fill in the TEST_URL input field."
             exit 1
           fi
-          echo "TEST_URL=$TEST_URL" >> $GITHUB_OUTPUT
 
-          # Optional basic-auth credentials — safe to leave blank if not needed
-          TEST_USERNAME=$(echo "$PR_BODY" | grep -oP '(?<=TEST_USERNAME:\s)\S+' | head -1 || true)
-          TEST_PASSWORD=$(echo "$PR_BODY" | grep -oP '(?<=TEST_PASSWORD:\s)\S+' | head -1 || true)
+          echo "TEST_URL=$TEST_URL" >> $GITHUB_OUTPUT
           echo "TEST_USERNAME=$TEST_USERNAME" >> $GITHUB_OUTPUT
           echo "TEST_PASSWORD=$TEST_PASSWORD" >> $GITHUB_OUTPUT
-
           echo "Using TEST_URL: $TEST_URL"
           if [ -n "$TEST_USERNAME" ]; then
             echo "Basic-auth username provided: $TEST_USERNAME"
           else
-            echo "No basic-auth credentials provided — assuming open staging URL."
+            echo "No basic-auth credentials — assuming open URL."
           fi
 
       # ── Node + Playwright setup ─────────────────────────────────────────────
