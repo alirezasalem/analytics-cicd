@@ -83,7 +83,7 @@ jobs:
           while IFS= read -r spec_file; do
             [ -z "$spec_file" ] && continue
             echo "→ Generating test for: $spec_file"
-            node agents/test-generator/run.js "$spec_file"
+            node agents/doc-generator/run.js --spec "$spec_file"
           done <<< "${{ steps.changed-specs.outputs.specs }}"
 
       # ── Commit all outputs in one commit ────────────────────────────────────
