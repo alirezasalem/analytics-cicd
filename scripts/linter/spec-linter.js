@@ -140,6 +140,19 @@ function lintSpec(filePath) {
           );
         }
       }
+
+      // 5e. trigger.selector required for interaction-based events      ← ADD FROM HERE
+      const INTERACTION_TRIGGERS = ['button_click', 'form_submit'];
+      if (INTERACTION_TRIGGERS.includes(event.trigger?.action)) {
+        if (!event.trigger?.selector || String(event.trigger.selector).trim() === '') {
+          errors.push(
+            `[${ename}] trigger.action is "${event.trigger.action}" ` +
+            `but trigger.selector is missing. ` +
+            `Add a selector (e.g. data-testid, CSS selector) so the Playwright ` +
+            `test generator knows what to click.`
+          );
+        }
+      }
     }
   } else if ('events' in spec) {
     warnings.push(`"events" field exists but is empty or not an array`);
