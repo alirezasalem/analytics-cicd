@@ -1,0 +1,48 @@
+spec_id: SPEC-2026-001-page_view
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in feature brief
+feature_brief_ref: FB-003
+generated_by: claude-api-agent
+created_at: NEEDS_CLARIFICATION: timestamp should be set by pipeline
+title: "Page View Tracking - All Pages"
+platform: web
+priority: NEEDS_CLARIFICATION: priority not specified in feature brief
+description: "Track every page load and virtual page change in SPA environment to measure traffic distribution and content performance"
+
+events:
+  - name: page_view
+    trigger: "All Pages - View - Page Load"
+    description: "Fires on initial page loads and client-side route changes"
+    parameters:
+      page_type: "DL - page_type"
+      page_category: "DL - page_category"
+      user_login_status: "DL - user_login_status"
+      user_id: "DL - user_id"
+    dataLayer:
+      event: page_view
+      event_category: navigation
+      event_label: "{{DL - page_type}}"
+      page_type: "{{DL - page_type}}"
+      page_category: "{{DL - page_category}}"
+      user_login_status: "{{DL - user_login_status}}"
+      user_id: "{{DL - user_id}}"
+    ga4_mapping:
+      event_name: page_view
+      custom_dimensions:
+        cd_page_type: "{{DL - page_type}}"
+        cd_page_category: "{{DL - page_category}}"
+        cd_user_login_status: "{{DL - user_login_status}}"
+      custom_parameters:
+        user_id: "{{DL - user_id}}"
+    gtm_notes: "Use Page View trigger for initial loads and History Change trigger for SPA navigation. Ensure user_id is hashed/anonymized before transmission."
+    pii_risk: true
+    pii_mitigation: "user_id must be hashed or anonymized before transmission to comply with GDPR/CCPA"
+
+acceptance_criteria:
+  - "Event fires on every initial page load across all site pages"
+  - "Event fires on virtual page changes in SPA environment after document title updates"
+  - "page_type parameter correctly identifies template (pdp, plp, checkout, home)"
+  - "user_login_status updates dynamically without page refresh when user logs in/out"
+  - "user_id is properly hashed/anonymized before GA4 transmission"
+  - "Verified in GA4 DebugView that all parameters populate correctly"
