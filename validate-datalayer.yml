@@ -1,0 +1,110 @@
+name: A4 — Validate dataLayer
+
+# Triggered on every PR to main — no path filter.
+# Runs ALL Playwright tests (full regression) against the TEST_URL in the PR description.
+# Catches regressions in previously-passing events, not just the new event.
+#
+# Required in PR description:
+#   TEST_URL: https://preview.example.com/branch-name
+#
+# Optional (for password-protected staging environments):
+#   TEST_USERNAME: staging
+#   TEST_PASSWORD: abc123
+#
+# A5 (GTM config generation) only runs after this workflow passes.
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-datalayer:
+    name: Playwright dataLayer validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # ── Extract TEST_URL + optional credentials from PR description ──────────
+      - name: Extract TEST_URL and credentials from PR description
+        id: extract-url
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          TEST_URL=$(echo "$PR_BODY" | grep -oP '(?<=TEST_URL:\s)https?://[^\s]+' | head -1)
+          if [ -z "$TEST_URL" ]; then
+            echo "::error::No TEST_URL found in PR description."
+            echo "::error::Add a line like:  TEST_URL: https://your-preview-url.com"
+            echo "::error::For protected staging, also add:"
+            echo "::error::  TEST_USERNAME: staging"
+            echo "::error::  TEST_PASSWORD: yourpassword"
+            exit 1
+          fi
+          echo "TEST_URL=$TEST_URL" >> $GITHUB_OUTPUT
+
+          # Optional basic-auth credentials — safe to leave blank if not needed
+          TEST_USERNAME=$(echo "$PR_BODY" | grep -oP '(?<=TEST_USERNAME:\s)\S+' | head -1 || true)
+          TEST_PASSWORD=$(echo "$PR_BODY" | grep -oP '(?<=TEST_PASSWORD:\s)\S+' | head -1 || true)
+          echo "TEST_USERNAME=$TEST_USERNAME" >> $GITHUB_OUTPUT
+          echo "TEST_PASSWORD=$TEST_PASSWORD" >> $GITHUB_OUTPUT
+
+          echo "Using TEST_URL: $TEST_URL"
+          if [ -n "$TEST_USERNAME" ]; then
+            echo "Basic-auth username provided: $TEST_USERNAME"
+          else
+            echo "No basic-auth credentials provided — assuming open staging URL."
+          fi
+
+      # ── Node + Playwright setup ─────────────────────────────────────────────
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # ── Run ALL tests (full regression) ────────────────────────────────────
+      - name: Run Playwright dataLayer tests
+        id: playwright
+        env:
+          TEST_URL: ${{ steps.extract-url.outputs.TEST_URL }}
+          TEST_USERNAME: ${{ steps.extract-url.outputs.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ steps.extract-url.outputs.TEST_PASSWORD }}
+        run: |
+          npx playwright test \
+            --config=playwright.config.js \
+            --reporter=list,html
+
+      # ── Upload artifacts on failure ─────────────────────────────────────────
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      # ── Gate summary ───────────────────────────────────────────────────────
+      - name: Summarise result
+        if: always()
+        run: |
+          if [ "${{ steps.playwright.outcome }}" == "success" ]; then
+            echo "## ✅ dataLayer validation passed" >> $GITHUB_STEP_SUMMARY
+            echo "All Playwright tests passed against \`${{ steps.extract-url.outputs.TEST_URL }}\`." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**A5 (GTM config generation) is now unblocked.**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## ❌ dataLayer validation failed" >> $GITHUB_STEP_SUMMARY
+            echo "One or more Playwright tests failed — this may be a regression in an existing event." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**A5 is blocked until all tests pass.**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Download the Playwright report from the Artifacts section above for details." >> $GITHUB_STEP_SUMMARY
+          fi
