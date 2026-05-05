@@ -1,8 +1,8 @@
-name: A4 — Generate Playwright Tests
+name: Generate Playwright Tests
 
-# Triggered when a spec YAML is merged to main.
+# Triggered when a spec YAML is merged to main, or manually via workflow_dispatch.
 # Reads the spec → calls Claude API → writes tests/playwright/[event].spec.js
-# and commits them back to main alongside the spec.
+# and commits them back to main.
 
 on:
   push:
@@ -11,13 +11,19 @@ on:
     paths:
       - 'specs/**.yaml'
 
+  workflow_dispatch:
+    inputs:
+      spec_file:
+        description: 'Path to spec YAML (e.g. specs/SPEC-2026-001-page_view.yaml)'
+        required: true
+
 jobs:
   generate-tests:
     name: Generate Playwright tests from spec
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write   # needed to commit generated test files back to main
+      contents: write
 
     steps:
       - name: Checkout repo
@@ -35,18 +41,23 @@ jobs:
           cd agents/test-generator
           npm ci
 
-      - name: Detect changed spec files
+      # ── Resolve which spec files to process ─────────────────────────────────
+      - name: Resolve spec files to process
         id: changed-specs
         run: |
-          # Get list of .yaml files changed in this push
-          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
-            | grep '^specs/.*\.yaml$' || true)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            CHANGED="${{ github.event.inputs.spec_file }}"
+          else
+            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+              | grep '^specs/.*\.yaml$' || true)
+          fi
           echo "specs<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          echo "Found changed specs:"
+          echo "Found specs to process:"
           echo "$CHANGED"
 
+      # ── Generate Playwright test files ──────────────────────────────────────
       - name: Generate Playwright test files
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -57,6 +68,7 @@ jobs:
             node agents/test-generator/run.js "$spec_file"
           done <<< "${{ steps.changed-specs.outputs.specs }}"
 
+      # ── Commit generated test files back to main ────────────────────────────
       - name: Commit generated test files
         run: |
           git config user.name  "analytics-bot"
@@ -64,10 +76,9 @@ jobs:
 
           git add tests/playwright/
 
-          # Only commit if there are actual changes
           if git diff --staged --quiet; then
             echo "No test files changed — nothing to commit."
           else
-            git commit -m "chore(a4): auto-generate Playwright tests from spec [skip ci]"
+            git commit -m "chore: auto-generate Playwright tests from spec [skip ci]"
             git push
           fi
