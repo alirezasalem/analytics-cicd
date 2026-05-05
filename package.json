@@ -1,29 +1,16 @@
 {
   "name": "analytics-cicd",
   "version": "1.0.0",
-  "description": "> AI-native analytics pipeline — from feature brief to validated production tracking, with zero manual toil.",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs",
-    "test": "tests"
-  },
+  "description": "Analytics CI/CD pipeline — spec generation, doc generation, dataLayer validation, GTM config generation",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "playwright test --config=playwright.config.js",
+    "test:report": "playwright show-report"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alirezasalem/analytics-cicd.git"
+  "devDependencies": {
+    "@playwright/test": "^1.44.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/alirezasalem/analytics-cicd/issues"
-  },
-  "homepage": "https://github.com/alirezasalem/analytics-cicd#readme",
-  "dependencies": {
-    "js-yaml": "^4.1.1",
-    "yaml": "^2.8.3"
-  },
-  "type": "module"
+  "engines": {
+    "node": ">=18"
+  }
 }
