@@ -1,8 +1,9 @@
-name: Generate Playwright Tests
+name: Generate Docs and Tests
 
 # Triggered when a spec YAML is merged to main, or manually via workflow_dispatch.
-# Reads the spec → calls Claude API → writes tests/playwright/[event].spec.js
-# and commits them back to main.
+# Runs both generators in sequence and commits all outputs in one commit:
+#   1. implementation/[event].md  — dev handoff doc (A3)
+#   2. tests/playwright/[event].spec.js — Playwright test file (A4)
 
 on:
   push:
@@ -18,8 +19,8 @@ on:
         required: true
 
 jobs:
-  generate-tests:
-    name: Generate Playwright tests from spec
+  generate:
+    name: Generate docs and tests from spec
     runs-on: ubuntu-latest
 
     permissions:
@@ -36,13 +37,19 @@ jobs:
         with:
           node-version: '20'
 
+      # ── Install dependencies for both agents ────────────────────────────────
+      - name: Install doc-generator dependencies
+        run: |
+          cd agents/doc-generator
+          npm ci
+
       - name: Install test-generator dependencies
         run: |
           cd agents/test-generator
           npm ci
 
       # ── Resolve which spec files to process ─────────────────────────────────
-      - name: Resolve spec files to process
+      - name: Resolve spec files
         id: changed-specs
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -54,31 +61,43 @@ jobs:
           echo "specs<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          echo "Found specs to process:"
+          echo "Specs to process:"
           echo "$CHANGED"
 
-      # ── Generate Playwright test files ──────────────────────────────────────
-      - name: Generate Playwright test files
+      # ── A3: Generate implementation docs ────────────────────────────────────
+      - name: Generate implementation docs
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           while IFS= read -r spec_file; do
             [ -z "$spec_file" ] && continue
-            echo "Processing: $spec_file"
+            echo "→ Generating doc for: $spec_file"
+            node agents/doc-generator/run.js "$spec_file"
+          done <<< "${{ steps.changed-specs.outputs.specs }}"
+
+      # ── A4: Generate Playwright tests ────────────────────────────────────────
+      - name: Generate Playwright tests
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          while IFS= read -r spec_file; do
+            [ -z "$spec_file" ] && continue
+            echo "→ Generating test for: $spec_file"
             node agents/test-generator/run.js "$spec_file"
           done <<< "${{ steps.changed-specs.outputs.specs }}"
 
-      # ── Commit generated test files back to main ────────────────────────────
-      - name: Commit generated test files
+      # ── Commit all outputs in one commit ────────────────────────────────────
+      - name: Commit generated files
         run: |
           git config user.name  "analytics-bot"
           git config user.email "analytics-bot@github-actions"
 
+          git add implementation/
           git add tests/playwright/
 
           if git diff --staged --quiet; then
-            echo "No test files changed — nothing to commit."
+            echo "No files changed — nothing to commit."
           else
-            git commit -m "chore: auto-generate Playwright tests from spec [skip ci]"
+            git commit -m "chore: auto-generate docs and tests from spec [skip ci]"
             git push
           fi
