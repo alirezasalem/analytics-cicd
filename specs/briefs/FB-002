@@ -1,0 +1,28 @@
+## FB-002 — Page View
+
+## Summary
+To understand user navigation patterns and content performance, we need to track every time a page is loaded or the URL changes in a single-page application (SPA) environment. This event serves as the foundational metric for all session-based analysis.
+
+## Business goal
+Measure traffic distribution across different site sections and correlate content engagement with user authentication status. This data will help optimize the user journey and identify high-value page categories.
+
+## Scope
+- Web only (Desktop, Mobile, Tablet)
+- All pages across the entire domain
+- Includes: Initial page loads and virtual page changes (client-side routing)
+
+## Event details
+- **Event name:** `page_view`
+- **Trigger:** Fires immediately when a page loads or when a new route is rendered.
+- **Event Parameters:**
+  | Parameter | Type | Description | Example |
+  | :--- | :--- | :--- | :--- |
+  | `page_type` | String | The template or layout of the page. | `pdp`, `plp`, `checkout`, `home` |
+  | `page_category` | String | The logical grouping or vertical of the content. | `footwear`, `electronics`, `blog` |
+  | `user_login_status` | String | Indicates if the visitor is authenticated. | `logged_in`, `guest` |
+  | `user_id` | String | The unique internal identifier for the user. | `USR-99283` (or `null` if guest) |
+
+## Notes
+- **User ID Handling:** Ensure `user_id` is hashed or anonymized per privacy regulations (GDPR/CCPA) before transmission.
+- **Timing:** For SPAs, ensure the event fires after the document title and metadata have updated to avoid capturing the previous page's information.
+- **Persistence:** `user_login_status` should be updated dynamically if a user logs in/out without a full page refresh.
