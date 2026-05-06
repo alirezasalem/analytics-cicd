@@ -37,7 +37,6 @@ jobs:
         with:
           node-version: '20'
 
-      # ── Install dependencies for both agents ────────────────────────────────
       - name: Install doc-generator dependencies
         run: |
           cd agents/doc-generator
@@ -70,9 +69,10 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           while IFS= read -r spec_file; do
+            spec_file=$(echo "$spec_file" | tr -d '[:space:]')
             [ -z "$spec_file" ] && continue
             echo "→ Generating doc for: $spec_file"
-            node agents/doc-generator/run.js "$spec_file"
+            node agents/doc-generator/run.js --spec "$spec_file"
           done <<< "${{ steps.changed-specs.outputs.specs }}"
 
       # ── A4: Generate Playwright tests ────────────────────────────────────────
@@ -81,9 +81,10 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           while IFS= read -r spec_file; do
+            spec_file=$(echo "$spec_file" | tr -d '[:space:]')
             [ -z "$spec_file" ] && continue
             echo "→ Generating test for: $spec_file"
-            node agents/doc-generator/run.js --spec "$spec_file"
+            node agents/test-generator/run.js "$spec_file"
           done <<< "${{ steps.changed-specs.outputs.specs }}"
 
       # ── Commit all outputs in one commit ────────────────────────────────────
