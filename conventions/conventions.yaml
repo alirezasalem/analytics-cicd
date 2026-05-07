@@ -332,3 +332,35 @@ linter:
     status_invalid:
       severity: error
       description: status must be one of the allowed values
+# ─────────────────────────────────────────────────────────────────────────────
+# ADD THIS SECTION to the bottom of conventions/conventions.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+
+# 9. TRIGGER STRUCTURE
+# ─────────────────────────────────────────────────────────────────────────────
+trigger:
+  # Required for button_click and form_submit events (enforced by linter rule 5e)
+  selector_required_for:
+    - button_click
+    - form_submit
+  selector_note: >
+    Must be a stable CSS selector or data-testid attribute.
+    Prefer data-testid over class or id selectors for stability.
+    Used by the A4 Playwright test generator to simulate the interaction.
+
+  # Recommended for all non-page_load events (linter warns if missing — rule 5f)
+  page_path_note: >
+    Set trigger.page_path to the relative URL path where this event can be triggered.
+    Example: /products/sample-product
+    This is appended to TEST_URL by Playwright so it lands on the correct page
+    before simulating the interaction.
+    Required when trigger.action is not page_load.
+    For page_load events, Playwright navigates to TEST_URL directly.
+
+  allowed_actions:
+    - page_load       # fires on navigation, no interaction needed
+    - button_click    # requires trigger.selector and trigger.page_path
+    - form_submit     # requires trigger.selector and trigger.page_path
+    - scroll          # requires trigger.page_path
+    - visibility      # requires trigger.selector and trigger.page_path
+    - spa_navigation  # client-side route change — test is skipped pending custom setup

@@ -1,15 +1,18 @@
 name: Validate dataLayer
 
-# Triggered on every PR to main, or manually via workflow_dispatch.
-# Runs ALL Playwright tests (full regression) against the provided TEST_URL.
-# Catches regressions in previously-passing events, not just the new event.
+# Triggered on every PR to main (full regression), or manually via workflow_dispatch
+# to test a single event against a live URL.
 #
 # PR description convention:
-#   TEST_URL: https://preview.example.com/branch-name
-#   TEST_USERNAME: staging        (optional, for password-protected staging)
+#   TEST_URL: https://preview.example.com
+#   TEST_USERNAME: staging        (optional)
 #   TEST_PASSWORD: abc123         (optional)
 #
-# A5 (GTM config generation) only runs after this workflow passes.
+# Manual run inputs:
+#   test_url      — required
+#   event_name    — optional; if set, only runs tests/playwright/[event_name].spec.js
+#   test_username — optional
+#   test_password — optional
 
 on:
   pull_request:
@@ -19,14 +22,18 @@ on:
   workflow_dispatch:
     inputs:
       test_url:
-        description: 'TEST_URL — live URL to run Playwright against'
+        description: 'Live URL to test against (e.g. https://mysite.com)'
         required: true
+      event_name:
+        description: 'Event to test (e.g. page_view). Leave blank to run all tests.'
+        required: false
+        default: ''
       test_username:
-        description: 'TEST_USERNAME — basic auth username (optional)'
+        description: 'Basic auth username (optional)'
         required: false
         default: ''
       test_password:
-        description: 'TEST_PASSWORD — basic auth password (optional)'
+        description: 'Basic auth password (optional)'
         required: false
         default: ''
 
@@ -39,7 +46,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # ── Extract TEST_URL + optional credentials ──────────────────────────────
+      # ── Extract inputs ───────────────────────────────────────────────────────
       - name: Extract TEST_URL and credentials
         id: extract-url
         env:
@@ -49,27 +56,47 @@ jobs:
             TEST_URL="${{ github.event.inputs.test_url }}"
             TEST_USERNAME="${{ github.event.inputs.test_username }}"
             TEST_PASSWORD="${{ github.event.inputs.test_password }}"
+            EVENT_NAME="${{ github.event.inputs.event_name }}"
           else
             TEST_URL=$(echo "$PR_BODY" | grep -oP '(?<=TEST_URL:\s)https?://[^\s]+' | head -1)
             TEST_USERNAME=$(echo "$PR_BODY" | grep -oP '(?<=TEST_USERNAME:\s)\S+' | head -1 || true)
             TEST_PASSWORD=$(echo "$PR_BODY" | grep -oP '(?<=TEST_PASSWORD:\s)\S+' | head -1 || true)
+            EVENT_NAME=""
           fi
 
           if [ -z "$TEST_URL" ]; then
             echo "::error::No TEST_URL provided."
-            echo "::error::Via PR description: TEST_URL: https://your-preview-url.com"
-            echo "::error::Via manual trigger: fill in the TEST_URL input field."
             exit 1
           fi
 
           echo "TEST_URL=$TEST_URL" >> $GITHUB_OUTPUT
           echo "TEST_USERNAME=$TEST_USERNAME" >> $GITHUB_OUTPUT
           echo "TEST_PASSWORD=$TEST_PASSWORD" >> $GITHUB_OUTPUT
+          echo "EVENT_NAME=$EVENT_NAME" >> $GITHUB_OUTPUT
           echo "Using TEST_URL: $TEST_URL"
-          if [ -n "$TEST_USERNAME" ]; then
-            echo "Basic-auth username provided: $TEST_USERNAME"
+          if [ -n "$EVENT_NAME" ]; then
+            echo "Testing single event: $EVENT_NAME"
           else
-            echo "No basic-auth credentials — assuming open URL."
+            echo "Running full regression — all events"
+          fi
+
+      # ── Resolve which test file(s) to run ───────────────────────────────────
+      - name: Resolve test target
+        id: test-target
+        run: |
+          EVENT_NAME="${{ steps.extract-url.outputs.EVENT_NAME }}"
+          if [ -n "$EVENT_NAME" ]; then
+            TEST_FILE="tests/playwright/${EVENT_NAME}.spec.js"
+            if [ ! -f "$TEST_FILE" ]; then
+              echo "::error::Test file not found: $TEST_FILE"
+              echo "::error::Run the 'Generate Docs and Tests' workflow first for this event."
+              exit 1
+            fi
+            echo "target=$TEST_FILE" >> $GITHUB_OUTPUT
+            echo "Resolved test file: $TEST_FILE"
+          else
+            echo "target=tests/playwright/" >> $GITHUB_OUTPUT
+            echo "Resolved test target: all files in tests/playwright/"
           fi
 
       # ── Node + Playwright setup ─────────────────────────────────────────────
@@ -85,7 +112,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      # ── Run ALL tests (full regression) ────────────────────────────────────
+      # ── Run tests ──────────────────────────────────────────────────────────
       - name: Run Playwright dataLayer tests
         id: playwright
         env:
@@ -94,10 +121,11 @@ jobs:
           TEST_PASSWORD: ${{ steps.extract-url.outputs.TEST_PASSWORD }}
         run: |
           npx playwright test \
+            ${{ steps.test-target.outputs.target }} \
             --config=playwright.config.js \
             --reporter=list,html
 
-      # ── Upload artifacts on failure ─────────────────────────────────────────
+      # ── Upload report on failure ────────────────────────────────────────────
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v4
@@ -106,20 +134,21 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
-      # ── Gate summary ───────────────────────────────────────────────────────
+      # ── Summary ────────────────────────────────────────────────────────────
       - name: Summarise result
         if: always()
         run: |
+          EVENT_NAME="${{ steps.extract-url.outputs.EVENT_NAME }}"
+          SCOPE="${EVENT_NAME:-all events}"
+
           if [ "${{ steps.playwright.outcome }}" == "success" ]; then
             echo "## ✅ dataLayer validation passed" >> $GITHUB_STEP_SUMMARY
-            echo "All Playwright tests passed against \`${{ steps.extract-url.outputs.TEST_URL }}\`." >> $GITHUB_STEP_SUMMARY
+            echo "Tested: \`$SCOPE\` against \`${{ steps.extract-url.outputs.TEST_URL }}\`" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**A5 (GTM config generation) is now unblocked.**" >> $GITHUB_STEP_SUMMARY
           else
             echo "## ❌ dataLayer validation failed" >> $GITHUB_STEP_SUMMARY
-            echo "One or more Playwright tests failed — this may be a regression in an existing event." >> $GITHUB_STEP_SUMMARY
+            echo "Tested: \`$SCOPE\` against \`${{ steps.extract-url.outputs.TEST_URL }}\`" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**A5 is blocked until all tests pass.**" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Download the Playwright report from the Artifacts section above for details." >> $GITHUB_STEP_SUMMARY
+            echo "Download the Playwright report from the Artifacts section for details." >> $GITHUB_STEP_SUMMARY
           fi
