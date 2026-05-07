@@ -153,29 +153,30 @@ function lintSpec(filePath) {
           );
         }
       }
+
+      // 5f. trigger.page_path recommended for non-page_load events
+      const triggerStr = typeof event.trigger === 'string'
+        ? event.trigger.toLowerCase()
+        : (event.trigger?.action || '').toLowerCase();
+
+      const isPageLoad = triggerStr.includes('page_load') || triggerStr.includes('page load');
+
+      if (!isPageLoad) {
+        const hasPagePath = event.trigger?.page_path &&
+          String(event.trigger.page_path).trim() !== '';
+        if (!hasPagePath) {
+          warnings.push(
+            `[${ename}] trigger does not appear to be a page_load but trigger.page_path is not set. ` +
+            `Add trigger.page_path (e.g. /products/sample) so Playwright knows which page to load ` +
+            `before triggering the interaction.`
+          );
+        }
+      }
     }
   } else if ('events' in spec) {
     warnings.push(`"events" field exists but is empty or not an array`);
   }
 
-// 5f. trigger.page_path recommended for non-page_load events
-const triggerStr = typeof event.trigger === 'string'
-  ? event.trigger.toLowerCase()
-  : (event.trigger?.action || '').toLowerCase();
-
-const isPageLoad = triggerStr.includes('page_load') || triggerStr.includes('page load');
-
-if (!isPageLoad) {
-  const hasPagePath = event.trigger?.page_path &&
-    String(event.trigger.page_path).trim() !== '';
-  if (!hasPagePath) {
-    warnings.push(
-      `[${ename}] trigger does not appear to be a page_load but trigger.page_path is not set. ` +
-      `Add trigger.page_path (e.g. /products/sample) so Playwright knows which page to load ` +
-      `before triggering the interaction.`
-    );
-  }
-}
 
   // 6. Warn on NEEDS_CLARIFICATION fields
   const specStr = JSON.stringify(spec);
