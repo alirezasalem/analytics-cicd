@@ -1,0 +1,55 @@
+spec_id: SPEC-2026-001-add_to_cart
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in feature brief
+feature_brief_ref: NEEDS_CLARIFICATION: feature brief reference not provided
+generated_by: claude-api-agent
+created_at: NEEDS_CLARIFICATION: timestamp will be set by pipeline
+platform: web
+priority: NEEDS_CLARIFICATION: priority not specified in feature brief
+title: "Product Detail Page — Add to Cart Success"
+
+events:
+  - name: add_to_cart
+    description: "Fires when user successfully adds product to cart after confirmation"
+    trigger: "PDP - Add to Cart - Success"
+    parameters:
+      currency: "DL - currency"
+      value: "DL - cart_value"
+      product_id: "DL - product_id"
+      product_name: "DL - product_name"
+      brand: "DL - brand"
+      category: "DL - category"
+      price: "DL - price"
+      quantity: "DL - quantity"
+    dataLayer:
+      event: add_to_cart
+      event_category: ecommerce
+      event_label: "{{DL - product_name}}"
+      currency: "{{DL - currency}}"
+      value: "{{DL - cart_value}}"
+      ecommerce:
+        currency: "{{DL - currency}}"
+        value: "{{DL - cart_value}}"
+        items:
+          - item_id: "{{DL - product_id}}"
+            item_name: "{{DL - product_name}}"
+            item_brand: "{{DL - brand}}"
+            item_category: "{{DL - category}}"
+            price: "{{DL - price}}"
+            quantity: "{{DL - quantity}}"
+    ga4_mapping:
+      event_name: add_to_cart
+      custom_dimensions:
+        cd_product_id: "{{DL - product_id}}"
+        cd_brand: "{{DL - brand}}"
+        cd_category: "{{DL - category}}"
+    gtm_notes: "Fire only after successful cart API response. Use custom event trigger listening for add_to_cart dataLayer push. Do not fire on button click alone."
+
+acceptance_criteria:
+  - "Event fires only after successful add-to-cart API confirmation"
+  - "Event does not fire if add-to-cart fails (out of stock, API error)"
+  - "Value reflects total price (price × quantity) for items added"
+  - "All ecommerce parameters are populated before GTM fires"
+  - "Verified in GA4 DebugView with proper ecommerce structure"
+  - "Event appears in GA4 ecommerce reports under add-to-cart metrics"
