@@ -78,7 +78,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 // ── generate test per event ───────────────────────────────────────────────────
 
 async function generateTestForEvent(eventSpec) {
-  const eventName = eventSpec.event_name;
+  const eventName = eventSpec.name || eventSpec.event_name;
   console.log(`\n→ Generating test for: ${eventName}`);
 
   const userMessage = `
