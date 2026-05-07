@@ -51,7 +51,11 @@ const specRaw = fs.readFileSync(SPEC_PATH, 'utf8');
 
 let spec;
 try {
-  spec = yaml.load(specRaw);
+  const sanitized = specRaw.replace(
+    /^(\s*[\w.]+\s*):\s*(NEEDS_CLARIFICATION:[^\n]+)$/gm,
+    '$1: "$2"'
+  );
+  spec = yaml.load(sanitized);
 } catch (err) {
   console.error(`Error: Could not parse YAML spec — ${err.message}`);
   process.exit(1);
