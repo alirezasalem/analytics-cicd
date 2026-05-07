@@ -177,7 +177,6 @@ function lintSpec(filePath) {
     warnings.push(`"events" field exists but is empty or not an array`);
   }
 
-
   // 6. Warn on NEEDS_CLARIFICATION fields
   const specStr = JSON.stringify(spec);
   const clarificationCount = (specStr.match(/NEEDS_CLARIFICATION/g) || []).length;
