@@ -65,7 +65,10 @@ feature_brief_ref: FB-007
 
 events:
   - name: click_add_to_cart
-    trigger: "PDP - Click - Add to Cart"
+    trigger:
+      action: button_click
+      selector: ".add-to-cart"
+      page_path: /products/sample
     parameters:
       product_id: "DL - product_id"
       product_name: "DL - product_name"
@@ -95,3 +98,8 @@ acceptance_criteria:
 - If the brief is for a form, always include `form_id` and `form_name` parameters.
 - If the brief mentions video, include `video_title`, `video_percent`, `video_provider`.
 - Always generate at least one `acceptance_criteria` item per event.
+- `trigger` must always be a structured object — never a plain string. It must contain:
+  - `action`: one of `page_load`, `button_click`, `form_submit`, `custom`
+  - `selector`: CSS selector or text selector for the element (required when action is `button_click` or `form_submit`)
+  - `page_path`: the relative path or full URL of the page where the event fires
+  - If the brief doesn't specify a selector, use `"NEEDS_CLARIFICATION: selector not specified"` — never omit it.
