@@ -53,3 +53,4 @@ acceptance_criteria:
   - "All ecommerce parameters are populated before GTM fires"
   - "Verified in GA4 DebugView with proper ecommerce structure"
   - "Event appears in GA4 ecommerce reports under add-to-cart metrics"
+
