@@ -120,17 +120,10 @@ Translate each into a test:
 - `requires_user_id_when_logged_in` → conditional assertion based on `user_login_status`
 
 ### 6. Trigger action
-Read `trigger.action` (may be a string like `"All Pages - View - Page Load"` or a structured field):
-- If trigger contains "page load" or "page_load" → just `page.goto()`, no extra interaction
-- If trigger contains "button" or "click" → `page.click(trigger.selector)`
-- If trigger contains "form" or "submit" → `page.fill()` fields + `page.click(submitSelector)`
-- If trigger contains "scroll" → `page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))`
-- If trigger contains "history" or "route change" or "SPA" → add a skipped test with comment explaining SPA navigation requires custom setup
+Only `page_load` events are tested by Playwright. All other trigger types are handled by the live inspector tool.
 
-## Trigger selector strategy
-- If `trigger.selector` is present → use it exactly
-- If trigger requires interaction but no selector → use `test.skip` with message: `"trigger.selector not defined in spec — add it to enable this test"`
-- Never silently guess a selector
+- If trigger is `page_load` (or contains "page load") → just `page.goto()`, no extra interaction
+- If trigger is anything else → output only a `test.skip` stub with message: `"Interaction-based event — validated via live inspector tool, not Playwright"`
 
 ## Error messages
 All `expect()` calls must use the second argument:
