@@ -23,12 +23,15 @@ events:
       event_label: "{{DL - product_name}}"
       currency: "{{DL - currency}}"
       value: "{{DL - product_price}}"
-      items:
-        - item_id: "{{DL - product_id}}"
-          item_name: "{{DL - product_name}}"
-          item_brand: "{{DL - product_brand}}"
-          item_category: "{{DL - product_category}}"
-          price: "{{DL - product_price}}"
+      ecommerce:
+        currency: "{{DL - currency}}"
+        value: "{{DL - product_price}}"
+        items:
+          - item_id: "{{DL - product_id}}"
+            item_name: "{{DL - product_name}}"
+            item_brand: "{{DL - product_brand}}"
+            item_category: "{{DL - product_category}}"
+            price: "{{DL - product_price}}"
     ga4_mapping:
       event_name: view_item
       custom_dimensions:

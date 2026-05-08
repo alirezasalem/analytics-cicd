@@ -24,6 +24,7 @@ A copy-paste ready JavaScript code block. Rules:
 - For items arrays, include exactly one realistic item object
 - Add inline comments for parameters that need explanation
 - The snippet must be valid JavaScript — no pseudocode
+- For GA4 ecommerce events (add_to_cart, remove_from_cart, view_item, begin_checkout, purchase, etc.), always push `{ ecommerce: null }` first to clear previous data, then push the event with all ecommerce fields nested inside an `ecommerce` object. Never put `items` at the top level.
 
 ### 5. Parameter Table
 A Markdown table with columns: `Parameter` | `Type` | `Required` | `Example` | `Description`
