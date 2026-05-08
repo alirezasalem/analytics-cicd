@@ -42,11 +42,9 @@ Always check the `dataLayer` section of the spec first — it shows the exact ke
 
 ## Navigation — what page to load
 
-Read the spec in this order to determine where to navigate:
-
-1. If `trigger.page_path` is set → navigate to `process.env.TEST_URL + trigger.page_path`
-2. If `trigger.page_path` is not set and trigger action is `page_load` → navigate to `process.env.TEST_URL`
-3. If `trigger.page_path` is not set and trigger action is NOT `page_load` → navigate to `process.env.TEST_URL` and add a `// TODO: set trigger.page_path in spec for correct page` comment
+Always navigate to exactly `process.env.TEST_URL` — never append any path to it.
+The TEST_URL provided at runtime is already the full correct URL for the page under test.
+Never concatenate trigger.page_path or any other value onto TEST_URL.
 
 ## Test structure to follow
 
@@ -79,7 +77,7 @@ test.describe('[event_name]', () => {
   let eventPayload;
 
   test.beforeEach(async ({ page }) => {
-    await page.goto(process.env.TEST_URL + '[page_path_or_empty]');
+    await page.goto(process.env.TEST_URL);
     // trigger interaction here if needed
     eventPayload = await waitForDataLayerEvent(page, '[event_name]');
   });

@@ -9,8 +9,6 @@ events:
   - name: view_item
     trigger:
       action: page_load
-      selector: NEEDS_CLARIFICATION: no selector needed for page load events
-      page_path: /products/*
     parameters:
       currency: "DL - currency"
       value: "DL - product_price"
