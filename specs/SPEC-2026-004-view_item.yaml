@@ -1,0 +1,45 @@
+spec_id: SPEC-2026-001-view_item
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in brief
+feature_brief_ref: NEEDS_CLARIFICATION: feature brief reference not provided
+generated_by: claude-api-agent
+created_at: NEEDS_CLARIFICATION: timestamp will be set by pipeline
+events:
+  - name: view_item
+    trigger:
+      action: page_load
+      selector: NEEDS_CLARIFICATION: no selector needed for page load events
+      page_path: /products/*
+    parameters:
+      currency: "DL - currency"
+      value: "DL - product_price"
+      product_id: "DL - product_id"
+      product_name: "DL - product_name"
+      brand: "DL - product_brand"
+      category: "DL - product_category"
+      price: "DL - product_price"
+    dataLayer:
+      event: view_item
+      event_category: ecommerce
+      event_label: "{{DL - product_name}}"
+      currency: "{{DL - currency}}"
+      value: "{{DL - product_price}}"
+      items:
+        - item_id: "{{DL - product_id}}"
+          item_name: "{{DL - product_name}}"
+          item_brand: "{{DL - product_brand}}"
+          item_category: "{{DL - product_category}}"
+          price: "{{DL - product_price}}"
+    ga4_mapping:
+      event_name: view_item
+      custom_dimensions:
+        cd_product_id: "{{DL - product_id}}"
+        cd_product_brand: "{{DL - product_brand}}"
+        cd_product_category: "{{DL - product_category}}"
+    gtm_notes: "Fire on page load for all product detail pages. Use Page View trigger with page path condition /products/*"
+acceptance_criteria:
+  - "Event fires once per page load on product detail pages"
+  - "All product data is populated from dataLayer before GTM fires"
+  - "Currency and value fields are properly formatted for GA4 ecommerce"
+  - "Verified in GA4 DebugView that view_item event appears with correct parameters"
