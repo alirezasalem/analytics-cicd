@@ -254,9 +254,11 @@ function main() {
   for (const event of spec.events) {
     const eventName = event.name;
     // Read variables from dataLayer block, not parameters.
-    // - Skip 'event' key (it's the trigger name, not a variable)
-    // - Collapse entire ecommerce object into a single DLV - ecommerce variable
-    // - Skip top-level value/currency if ecommerce block exists (they live inside it)
+    // Rules:
+    // - Skip 'event' key (trigger name, not a variable)
+    // - Skip top-level value/currency if ecommerce block exists (duplicates)
+    // - ecommerce object → one DLV for the whole object + one DLV per first-level child key
+    // - items stays as a single variable (no per-item-field expansion)
     const dl = event.dataLayer || {};
     const hasEcommerce = dl.ecommerce !== undefined;
     const skipKeys = new Set(['event']);
@@ -264,14 +266,22 @@ function main() {
       skipKeys.add('value');
       skipKeys.add('currency');
     }
-    const params = Object.keys(dl)
-      .filter(k => !skipKeys.has(k))
-      .map(k => {
-        if (k === 'ecommerce') return { name: 'ecommerce' };
-        if (typeof dl[k] === 'object' && dl[k] !== null) return null; // skip other nested objects
-        return { name: k };
-      })
-      .filter(Boolean);
+    const params = [];
+    for (const k of Object.keys(dl)) {
+      if (skipKeys.has(k)) continue;
+      if (k === 'ecommerce') {
+        // one variable for the whole ecommerce object
+        params.push({ name: 'ecommerce' });
+        // one variable per first-level key inside ecommerce (e.g. ecommerce.currency)
+        const eco = dl.ecommerce || {};
+        for (const ek of Object.keys(eco)) {
+          params.push({ name: \`ecommerce.\${ek}\` });
+        }
+        continue;
+      }
+      if (typeof dl[k] === 'object' && dl[k] !== null) continue; // skip other nested objects
+      params.push({ name: k });
+    }
 
     if (!eventName) {
       console.warn('[gtm-generator] Skipping event with no name.');
