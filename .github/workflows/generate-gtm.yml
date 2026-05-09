@@ -1,0 +1,61 @@
+name: Generate GTM Config
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'specs/**/*.yaml'
+
+  workflow_dispatch:
+    inputs:
+      spec_file:
+        description: 'Path to spec file (e.g. specs/my-spec.yaml). Leave empty to auto-detect from last commit.'
+        required: false
+        default: ''
+
+jobs:
+  generate-gtm:
+    name: Generate GTM client-side export
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run GTM generator
+        run: |
+          SPEC_FILE="${{ github.event.inputs.spec_file }}"
+          if [ -n "$SPEC_FILE" ]; then
+            echo "Running with specified spec: $SPEC_FILE"
+            node agents/gtm-generator/run.js "$SPEC_FILE"
+          else
+            echo "Auto-detecting spec from last commit"
+            node agents/gtm-generator/run.js
+          fi
+
+      - name: Commit and push GTM export(s)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add gtm/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: generate GTM config [skip ci]"
+            git push
+          fi
