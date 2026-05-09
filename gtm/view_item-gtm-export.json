@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-09 20:52:48",
+  "exportTime": "2026-05-09 21:10:59",
   "containerVersion": {
     "path": "accounts/0000000000/containers/000000000/versions/0",
     "accountId": "0000000000",
@@ -15,7 +15,7 @@
       "usageContext": [
         "WEB"
       ],
-      "fingerprint": "1778359968203",
+      "fingerprint": "1778361059367",
       "features": {
         "supportUserPermissions": true,
         "supportEnvironments": true,
@@ -56,12 +56,12 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameter",
-                    "value": "currency"
+                    "value": "event_category"
                   },
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{DLV - currency}}"
+                    "value": "{{DLV - event_category}}"
                   }
                 ]
               },
@@ -71,12 +71,12 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameter",
-                    "value": "value"
+                    "value": "event_label"
                   },
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{DLV - value}}"
+                    "value": "{{DLV - event_label}}"
                   }
                 ]
               },
@@ -86,72 +86,12 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameter",
-                    "value": "product_id"
+                    "value": "ecommerce"
                   },
                   {
                     "type": "TEMPLATE",
                     "key": "parameterValue",
-                    "value": "{{DLV - product_id}}"
-                  }
-                ]
-              },
-              {
-                "type": "MAP",
-                "map": [
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameter",
-                    "value": "product_name"
-                  },
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameterValue",
-                    "value": "{{DLV - product_name}}"
-                  }
-                ]
-              },
-              {
-                "type": "MAP",
-                "map": [
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameter",
-                    "value": "brand"
-                  },
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameterValue",
-                    "value": "{{DLV - brand}}"
-                  }
-                ]
-              },
-              {
-                "type": "MAP",
-                "map": [
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameter",
-                    "value": "category"
-                  },
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameterValue",
-                    "value": "{{DLV - category}}"
-                  }
-                ]
-              },
-              {
-                "type": "MAP",
-                "map": [
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameter",
-                    "value": "price"
-                  },
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameterValue",
-                    "value": "{{DLV - price}}"
+                    "value": "{{DLV - ecommerce}}"
                   }
                 ]
               }
@@ -168,7 +108,7 @@
             "value": "G-XXXXXXXXXX"
           }
         ],
-        "fingerprint": "1778359968204",
+        "fingerprint": "1778361059368",
         "firingTriggerId": [
           "101"
         ],
@@ -205,7 +145,7 @@
             ]
           }
         ],
-        "fingerprint": "1778359968202"
+        "fingerprint": "1778361059367"
       }
     ],
     "variable": [
@@ -213,7 +153,7 @@
         "accountId": "0000000000",
         "containerId": "000000000",
         "variableId": "110",
-        "name": "DLV - currency",
+        "name": "DLV - event_category",
         "type": "v",
         "parameter": [
           {
@@ -229,17 +169,17 @@
           {
             "type": "TEMPLATE",
             "key": "name",
-            "value": "currency"
+            "value": "event_category"
           }
         ],
-        "fingerprint": "1778359968202",
+        "fingerprint": "1778361059367",
         "formatValue": {}
       },
       {
         "accountId": "0000000000",
         "containerId": "000000000",
         "variableId": "111",
-        "name": "DLV - value",
+        "name": "DLV - event_label",
         "type": "v",
         "parameter": [
           {
@@ -255,17 +195,17 @@
           {
             "type": "TEMPLATE",
             "key": "name",
-            "value": "value"
+            "value": "event_label"
           }
         ],
-        "fingerprint": "1778359968203",
+        "fingerprint": "1778361059368",
         "formatValue": {}
       },
       {
         "accountId": "0000000000",
         "containerId": "000000000",
         "variableId": "112",
-        "name": "DLV - product_id",
+        "name": "DLV - ecommerce",
         "type": "v",
         "parameter": [
           {
@@ -281,114 +221,10 @@
           {
             "type": "TEMPLATE",
             "key": "name",
-            "value": "product_id"
+            "value": "ecommerce"
           }
         ],
-        "fingerprint": "1778359968204",
-        "formatValue": {}
-      },
-      {
-        "accountId": "0000000000",
-        "containerId": "000000000",
-        "variableId": "113",
-        "name": "DLV - product_name",
-        "type": "v",
-        "parameter": [
-          {
-            "type": "INTEGER",
-            "key": "dataLayerVersion",
-            "value": "2"
-          },
-          {
-            "type": "BOOLEAN",
-            "key": "setDefaultValue",
-            "value": "false"
-          },
-          {
-            "type": "TEMPLATE",
-            "key": "name",
-            "value": "product_name"
-          }
-        ],
-        "fingerprint": "1778359968205",
-        "formatValue": {}
-      },
-      {
-        "accountId": "0000000000",
-        "containerId": "000000000",
-        "variableId": "114",
-        "name": "DLV - brand",
-        "type": "v",
-        "parameter": [
-          {
-            "type": "INTEGER",
-            "key": "dataLayerVersion",
-            "value": "2"
-          },
-          {
-            "type": "BOOLEAN",
-            "key": "setDefaultValue",
-            "value": "false"
-          },
-          {
-            "type": "TEMPLATE",
-            "key": "name",
-            "value": "brand"
-          }
-        ],
-        "fingerprint": "1778359968206",
-        "formatValue": {}
-      },
-      {
-        "accountId": "0000000000",
-        "containerId": "000000000",
-        "variableId": "115",
-        "name": "DLV - category",
-        "type": "v",
-        "parameter": [
-          {
-            "type": "INTEGER",
-            "key": "dataLayerVersion",
-            "value": "2"
-          },
-          {
-            "type": "BOOLEAN",
-            "key": "setDefaultValue",
-            "value": "false"
-          },
-          {
-            "type": "TEMPLATE",
-            "key": "name",
-            "value": "category"
-          }
-        ],
-        "fingerprint": "1778359968207",
-        "formatValue": {}
-      },
-      {
-        "accountId": "0000000000",
-        "containerId": "000000000",
-        "variableId": "116",
-        "name": "DLV - price",
-        "type": "v",
-        "parameter": [
-          {
-            "type": "INTEGER",
-            "key": "dataLayerVersion",
-            "value": "2"
-          },
-          {
-            "type": "BOOLEAN",
-            "key": "setDefaultValue",
-            "value": "false"
-          },
-          {
-            "type": "TEMPLATE",
-            "key": "name",
-            "value": "price"
-          }
-        ],
-        "fingerprint": "1778359968208",
+        "fingerprint": "1778361059369",
         "formatValue": {}
       }
     ],
@@ -424,6 +260,6 @@
         "name": "Event"
       }
     ],
-    "fingerprint": "1778359968205"
+    "fingerprint": "1778361059369"
   }
 }
