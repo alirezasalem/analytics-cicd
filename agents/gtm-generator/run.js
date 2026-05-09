@@ -62,7 +62,7 @@ function loadSpec(filePath) {
     /:\s*(NEEDS_CLARIFICATION:[^\n]*)/g,
     ': "$1"'
   );
-  return yaml.load(sanitized);
+  return yaml.parse(sanitized);
 }
 
 function resolveSpecFile(arg) {
