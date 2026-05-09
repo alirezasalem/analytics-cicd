@@ -275,7 +275,7 @@ function main() {
         // one variable per first-level key inside ecommerce (e.g. ecommerce.currency)
         const eco = dl.ecommerce || {};
         for (const ek of Object.keys(eco)) {
-          params.push({ name: \`ecommerce.\${ek}\` });
+          params.push({ name: 'ecommerce.' + ek });
         }
         continue;
       }
