@@ -253,11 +253,25 @@ function main() {
 
   for (const event of spec.events) {
     const eventName = event.name;
-    // Support both array format [{name, type, ...}] and map format {key: value}
-    const rawParams = event.parameters || {};
-    const params = Array.isArray(rawParams)
-      ? rawParams.filter(p => p?.name)
-      : Object.keys(rawParams).map(k => ({ name: k }));
+    // Read variables from dataLayer block, not parameters.
+    // - Skip 'event' key (it's the trigger name, not a variable)
+    // - Collapse entire ecommerce object into a single DLV - ecommerce variable
+    // - Skip top-level value/currency if ecommerce block exists (they live inside it)
+    const dl = event.dataLayer || {};
+    const hasEcommerce = dl.ecommerce !== undefined;
+    const skipKeys = new Set(['event']);
+    if (hasEcommerce) {
+      skipKeys.add('value');
+      skipKeys.add('currency');
+    }
+    const params = Object.keys(dl)
+      .filter(k => !skipKeys.has(k))
+      .map(k => {
+        if (k === 'ecommerce') return { name: 'ecommerce' };
+        if (typeof dl[k] === 'object' && dl[k] !== null) return null; // skip other nested objects
+        return { name: k };
+      })
+      .filter(Boolean);
 
     if (!eventName) {
       console.warn('[gtm-generator] Skipping event with no name.');
