@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-09 21:26:48",
+  "exportTime": "2026-05-09 21:30:53",
   "containerVersion": {
     "path": "accounts/0000000000/containers/000000000/versions/0",
     "accountId": "0000000000",
@@ -15,7 +15,7 @@
       "usageContext": [
         "WEB"
       ],
-      "fingerprint": "1778362008497",
+      "fingerprint": "1778362253418",
       "features": {
         "supportUserPermissions": true,
         "supportEnvironments": true,
@@ -101,7 +101,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameter",
-                    "value": "ecommerce.currency"
+                    "value": "currency"
                   },
                   {
                     "type": "TEMPLATE",
@@ -116,7 +116,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameter",
-                    "value": "ecommerce.value"
+                    "value": "value"
                   },
                   {
                     "type": "TEMPLATE",
@@ -131,7 +131,7 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameter",
-                    "value": "ecommerce.items"
+                    "value": "items"
                   },
                   {
                     "type": "TEMPLATE",
@@ -153,7 +153,7 @@
             "value": "G-XXXXXXXXXX"
           }
         ],
-        "fingerprint": "1778362008498",
+        "fingerprint": "1778362253419",
         "firingTriggerId": [
           "101"
         ],
@@ -190,7 +190,7 @@
             ]
           }
         ],
-        "fingerprint": "1778362008497"
+        "fingerprint": "1778362253418"
       }
     ],
     "variable": [
@@ -217,7 +217,7 @@
             "value": "event_category"
           }
         ],
-        "fingerprint": "1778362008497",
+        "fingerprint": "1778362253418",
         "formatValue": {}
       },
       {
@@ -243,7 +243,7 @@
             "value": "event_label"
           }
         ],
-        "fingerprint": "1778362008498",
+        "fingerprint": "1778362253419",
         "formatValue": {}
       },
       {
@@ -269,7 +269,7 @@
             "value": "ecommerce"
           }
         ],
-        "fingerprint": "1778362008499",
+        "fingerprint": "1778362253420",
         "formatValue": {}
       },
       {
@@ -295,7 +295,7 @@
             "value": "ecommerce.currency"
           }
         ],
-        "fingerprint": "1778362008500",
+        "fingerprint": "1778362253421",
         "formatValue": {}
       },
       {
@@ -321,7 +321,7 @@
             "value": "ecommerce.value"
           }
         ],
-        "fingerprint": "1778362008501",
+        "fingerprint": "1778362253422",
         "formatValue": {}
       },
       {
@@ -347,7 +347,7 @@
             "value": "ecommerce.items"
           }
         ],
-        "fingerprint": "1778362008502",
+        "fingerprint": "1778362253423",
         "formatValue": {}
       }
     ],
@@ -383,6 +383,6 @@
         "name": "Event"
       }
     ],
-    "fingerprint": "1778362008499"
+    "fingerprint": "1778362253420"
   }
 }
