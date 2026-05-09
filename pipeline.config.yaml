@@ -177,3 +177,14 @@ notifications:
       - spec_generated
       - lint_failure
       - pr_merged
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 10. GTM & GA4 ID placeholders
+# ─────────────────────────────────────────────────────────────────────────────
+gtm:
+  account_id: "GTM_ACCOUNT_ID"
+  container_id: "GTM_CONTAINER_ID"
+  container_name: "GTM_CONTAINER_NAME"
+
+ga4_measurement_id: "G-XXXXXXXXXX"
