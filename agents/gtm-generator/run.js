@@ -148,8 +148,8 @@ function buildTag(eventName, params, measurementId, triggerId, accountId, contai
   const eventSettingsTable = params.map((param) => ({
     type: 'MAP',
     map: [
-      { type: 'TEMPLATE', key: 'parameter',      value: param.name },
-      { type: 'TEMPLATE', key: 'parameterValue', value: `{{DLV - ${param.name}}}` },
+      { type: 'TEMPLATE', key: 'parameter',      value: param.name.includes('.') ? param.name.split('.').pop() : param.name },
+      { type: 'TEMPLATE', key: 'parameterValue', value: '{{DLV - ' + param.name + '}}' },
     ],
   }));
 
