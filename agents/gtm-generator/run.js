@@ -253,7 +253,11 @@ function main() {
 
   for (const event of spec.events) {
     const eventName = event.name;
-    const params    = (event.parameters || []).filter(p => p?.name);
+    // Support both array format [{name, type, ...}] and map format {key: value}
+    const rawParams = event.parameters || {};
+    const params = Array.isArray(rawParams)
+      ? rawParams.filter(p => p?.name)
+      : Object.keys(rawParams).map(k => ({ name: k }));
 
     if (!eventName) {
       console.warn('[gtm-generator] Skipping event with no name.');
