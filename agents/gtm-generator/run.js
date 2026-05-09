@@ -12,12 +12,12 @@
  *   node agents/gtm-generator/run.js          # auto-detects changed spec via git
  */
 
-'use strict';
-
-const fs   = require('fs');
-const path = require('path');
-const yaml = require('js-yaml');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
