@@ -14,6 +14,12 @@ async function waitForDataLayerEvent(page, eventName, timeoutMs = 8000) {
   throw new Error(`dataLayer event "${eventName}" not found within ${timeoutMs}ms`);
 }
 
+async function getAllDataLayerEvents(page, eventName) {
+  return page.evaluate((name) => {
+    return (window.dataLayer || []).filter(e => e.event === name);
+  }, eventName);
+}
+
 // ── tests ─────────────────────────────────────────────────────────────────────
 
 test.describe('view_item', () => {
@@ -79,7 +85,7 @@ test.describe('view_item', () => {
 
   test('ecommerce.value is present and is a number', async () => {
     expect(
-      typeof eventPayload.ecommerce?.value === 'number' && !isNaN(eventPayload.ecommerce?.value),
+      typeof eventPayload.ecommerce?.value === 'number' && !isNaN(eventPayload.ecommerce.value),
       `ecommerce.value must be a number, got ${typeof eventPayload.ecommerce?.value} (value: ${eventPayload.ecommerce?.value})`
     ).toBe(true);
   });
@@ -92,42 +98,49 @@ test.describe('view_item', () => {
   });
 
   test('ecommerce.items[0].item_id is present and is a non-empty string', async () => {
-    const itemId = eventPayload.ecommerce?.items?.[0]?.item_id;
+    const item = eventPayload.ecommerce?.items?.[0];
     expect(
-      typeof itemId === 'string' && itemId.length > 0,
-      `ecommerce.items[0].item_id must be a non-empty string, got ${typeof itemId} (value: ${itemId})`
+      typeof item?.item_id === 'string' && item.item_id.length > 0,
+      `ecommerce.items[0].item_id must be a non-empty string, got ${typeof item?.item_id} (value: ${item?.item_id})`
     ).toBe(true);
   });
 
   test('ecommerce.items[0].item_name is present and is a non-empty string', async () => {
-    const itemName = eventPayload.ecommerce?.items?.[0]?.item_name;
+    const item = eventPayload.ecommerce?.items?.[0];
     expect(
-      typeof itemName === 'string' && itemName.length > 0,
-      `ecommerce.items[0].item_name must be a non-empty string, got ${typeof itemName} (value: ${itemName})`
+      typeof item?.item_name === 'string' && item.item_name.length > 0,
+      `ecommerce.items[0].item_name must be a non-empty string, got ${typeof item?.item_name} (value: ${item?.item_name})`
     ).toBe(true);
   });
 
   test('ecommerce.items[0].item_brand is present and is a non-empty string', async () => {
-    const itemBrand = eventPayload.ecommerce?.items?.[0]?.item_brand;
+    const item = eventPayload.ecommerce?.items?.[0];
     expect(
-      typeof itemBrand === 'string' && itemBrand.length > 0,
-      `ecommerce.items[0].item_brand must be a non-empty string, got ${typeof itemBrand} (value: ${itemBrand})`
+      typeof item?.item_brand === 'string' && item.item_brand.length > 0,
+      `ecommerce.items[0].item_brand must be a non-empty string, got ${typeof item?.item_brand} (value: ${item?.item_brand})`
     ).toBe(true);
   });
 
   test('ecommerce.items[0].item_category is present and is a non-empty string', async () => {
-    const itemCategory = eventPayload.ecommerce?.items?.[0]?.item_category;
+    const item = eventPayload.ecommerce?.items?.[0];
     expect(
-      typeof itemCategory === 'string' && itemCategory.length > 0,
-      `ecommerce.items[0].item_category must be a non-empty string, got ${typeof itemCategory} (value: ${itemCategory})`
+      typeof item?.item_category === 'string' && item.item_category.length > 0,
+      `ecommerce.items[0].item_category must be a non-empty string, got ${typeof item?.item_category} (value: ${item?.item_category})`
     ).toBe(true);
   });
 
   test('ecommerce.items[0].price is present and is a number', async () => {
-    const price = eventPayload.ecommerce?.items?.[0]?.price;
+    const item = eventPayload.ecommerce?.items?.[0];
     expect(
-      typeof price === 'number' && !isNaN(price),
-      `ecommerce.items[0].price must be a number, got ${typeof price} (value: ${price})`
+      typeof item?.price === 'number' && !isNaN(item.price),
+      `ecommerce.items[0].price must be a number, got ${typeof item?.price} (value: ${item?.price})`
+    ).toBe(true);
+  });
+
+  test('top-level currency matches ecommerce.currency', async () => {
+    expect(
+      eventPayload.currency === eventPayload.ecommerce?.currency,
+      `top-level currency (${eventPayload.currency}) must match ecommerce.currency (${eventPayload.ecommerce?.currency})`
     ).toBe(true);
   });
 
@@ -138,10 +151,11 @@ test.describe('view_item', () => {
     ).toBe(true);
   });
 
-  test('top-level currency matches ecommerce.currency', async () => {
+  test('event_label matches ecommerce.items[0].item_name', async () => {
+    const item = eventPayload.ecommerce?.items?.[0];
     expect(
-      eventPayload.currency === eventPayload.ecommerce?.currency,
-      `top-level currency (${eventPayload.currency}) must match ecommerce.currency (${eventPayload.ecommerce?.currency})`
+      eventPayload.event_label === item?.item_name,
+      `event_label (${eventPayload.event_label}) must match ecommerce.items[0].item_name (${item?.item_name})`
     ).toBe(true);
   });
 });
