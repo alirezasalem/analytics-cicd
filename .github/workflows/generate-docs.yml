@@ -15,7 +15,7 @@ on:
 
 jobs:
   generate-docs:
-    name: Generate implementation docs from spec
+    name: Generate tracking concept docs from spec
     runs-on: ubuntu-latest
 
     permissions:
@@ -52,7 +52,7 @@ jobs:
           echo "Specs to process:"
           echo "$CHANGED"
 
-      - name: Generate implementation docs
+      - name: Generate tracking concept docs
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
@@ -67,7 +67,7 @@ jobs:
         run: |
           git config user.name  "analytics-bot"
           git config user.email "analytics-bot@github-actions"
-          git add implementation/
+          git add tracking-concepts/
           if git diff --staged --quiet; then
             echo "No files changed — nothing to commit."
           else
