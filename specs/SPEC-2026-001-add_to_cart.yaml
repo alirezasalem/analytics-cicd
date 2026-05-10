@@ -1,0 +1,50 @@
+spec_id: SPEC-2026-001-add_to_cart
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in brief
+feature_brief_ref: FB-add-to-cart
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: add_to_cart
+    trigger:
+      action: custom
+      selector: NEEDS_CLARIFICATION: multiple surfaces with different selectors
+      page_path: NEEDS_CLARIFICATION: fires on multiple page types
+    parameters:
+      currency: "DL - currency"
+      value: "DL - cart_value"
+      item_id: "DL - item_id"
+      item_name: "DL - item_name"
+      item_brand: "DL - item_brand"
+      item_category: "DL - item_category"
+      item_category2: "DL - item_category2"
+      item_variant: "DL - item_variant"
+      item_list_id: "DL - item_list_id"
+      item_list_name: "DL - item_list_name"
+      price: "DL - price"
+      quantity: "DL - quantity"
+      discount: "DL - discount"
+      coupon: "DL - coupon"
+      index: "DL - index"
+    dataLayer:
+      event: add_to_cart
+      ecommerce:
+        currency: "{{DL - currency}}"
+        value: "{{DL - cart_value}}"
+        items: "{{DL - cart_items}}"
+    ga4_mapping:
+      event_name: add_to_cart
+      custom_dimensions: {}
+    gtm_notes: "Fire on successful cart API response (HTTP 2xx) only. Requires custom event from application layer after API success. Clear ecommerce object before push. Implement debouncing for duplicate prevention."
+
+acceptance_criteria:
+  - "Event fires only after successful cart API response (HTTP 2xx), not on button click"
+  - "dataLayer.push({ ecommerce: null }) precedes the event push"
+  - "Single event per add-to-cart action regardless of quantity"
+  - "All required ecommerce parameters populated from cart API response"
+  - "Currency matches displayed/transactional currency"
+  - "Duplicate fires prevented with per-request debouncing"
+  - "Failed API calls (4xx/5xx) suppress the dataLayer push"
+  - "Verified in GA4 DebugView with complete ecommerce object structure"
