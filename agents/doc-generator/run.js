@@ -3,7 +3,7 @@
  * agents/doc-generator/run.js
  *
  * Reads a merged analytics spec YAML and generates one implementation
- * Markdown doc per event, writing to implementation/<event_name>.md
+ * Markdown doc per event (also know as tracking concept), writing to tracking-concepts/<event_name>.md
  *
  * Usage (CI):
  *   node agents/doc-generator/run.js --spec specs/SPEC-2025-001.yaml
@@ -13,7 +13,7 @@
  *
  * Env vars:
  *   ANTHROPIC_API_KEY  — required
- *   OUTPUT_DIR         — override output directory (default: implementation/)
+ *   OUTPUT_DIR         — override output directory (default: tracking-concepts/)
  *   DEBUG=1            — verbose stderr logging
  */
 
@@ -121,7 +121,7 @@ function buildUserMessage(spec, event) {
     eventYaml,
     "```",
     "",
-    "Generate the implementation document for this event only.",
+    "Generate the tracking concept (implementation guide for devs) document for this event only.",
     "Apply any global_parameters as implicit context (they are sent on every hit).",
   ].join("\n");
 }
@@ -140,7 +140,7 @@ async function generateDocForEvent(systemPrompt, spec, event) {
 // ── Output writer ─────────────────────────────────────────────────────────────
 
 function writeDoc(eventName, markdown) {
-  const outputDir = process.env.OUTPUT_DIR ?? join(REPO_ROOT, "implementation");
+  const outputDir = process.env.OUTPUT_DIR ?? join(REPO_ROOT, "tracking-concepts");
   mkdirSync(outputDir, { recursive: true });
 
   const fileName = `${eventName}.md`;
