@@ -77,40 +77,10 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // ── generate test per event ───────────────────────────────────────────────────
 
-function isPageLoadEvent(eventSpec) {
-  const trigger = eventSpec.trigger;
-  if (!trigger) return false;
-  if (typeof trigger === 'string') {
-    return trigger.toLowerCase().includes('page_load') || trigger.toLowerCase().includes('page load');
-  }
-  return trigger.action === 'page_load';
-}
-
-function writeSkipStub(eventName, reason) {
-  const outFile = path.join(OUTPUT_DIR, `${eventName}.spec.js`);
-  const stub = `import { test } from '@playwright/test';
-
-test.describe('${eventName}', () => {
-  test.skip(true, '${reason}');
-});
-`;
-  fs.writeFileSync(outFile, stub, 'utf8');
-  console.log(`  ⚠ Skipped: ${outFile}`);
-  console.log(`    Reason: ${reason}`);
-  return outFile;
-}
 
 async function generateTestForEvent(eventSpec) {
   const eventName = eventSpec.name || eventSpec.event_name;
   console.log(`\n→ Generating test for: ${eventName}`);
-
-  // Gate: only generate tests for page_load events
-  if (!isPageLoadEvent(eventSpec)) {
-    return writeSkipStub(
-      eventName,
-      'Interaction-based event — validated via live inspector tool, not Playwright'
-    );
-  }
 
   const userMessage = `
 Generate a complete Playwright test file for the following GA4 analytics event spec.
