@@ -1,0 +1,43 @@
+spec_id: SPEC-2026-001-add_payment_info
+version: 1.0.0
+status: draft
+owner: Analytics Team
+feature_brief_ref: FB-007
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: add_payment_info
+    trigger:
+      action: button_click
+      selector: "NEEDS_CLARIFICATION: payment confirmation/continue button selector not specified"
+      page_path: "NEEDS_CLARIFICATION: payment step URL not specified"
+    parameters:
+      currency: "DL - currency"
+      value: "DL - cart_total"
+      payment_type: "DL - payment_type"
+      coupon: "DL - coupon_code"
+      items: "DL - cart_items"
+    dataLayer:
+      event: add_payment_info
+      ecommerce:
+        currency: "{{DL - currency}}"
+        value: "{{DL - cart_total}}"
+        payment_type: "{{DL - payment_type}}"
+        coupon: "{{DL - coupon_code}}"
+        items: "{{DL - cart_items}}"
+    ga4_mapping:
+      event_name: add_payment_info
+      custom_dimensions:
+        cd_payment_type: "{{DL - payment_type}}"
+        cd_coupon_applied: "{{DL - coupon_code}}"
+    gtm_notes: "Standard GA4 ecommerce event. Clear ecommerce object before push. Fire on payment confirmation button click only."
+    pii_risk: true
+    pii_mitigation: "Never capture card numbers, expiry dates, or CVV codes. Only capture payment method type (e.g. 'Credit Card', 'PayPal')."
+
+acceptance_criteria:
+  - "Event fires once per button click, not on page load"
+  - "Ecommerce object is cleared before push with dataLayer.push({ ecommerce: null })"
+  - "No PII (card numbers, expiry, CVV) is captured in any parameter"
+  - "payment_type contains only method name, not sensitive details"
+  - "Verified in GA4 DebugView before merge"
