@@ -118,10 +118,10 @@ Translate each into a test:
 - `requires_user_id_when_logged_in` → conditional assertion based on `user_login_status`
 
 ### 6. Trigger action
-Only `page_load` events are tested by Playwright. All other trigger types are handled by the live inspector tool.
+All events must produce a real test — never output `test.skip`.
 
 - If trigger is `page_load` (or contains "page load") → just `page.goto()`, no extra interaction
-- If trigger is anything else → output only a `test.skip` stub with message: `"Interaction-based event — validated via live inspector tool, not Playwright"`
+- If trigger is `button_click`, `form_submit`, or any other interaction → use `page.locator()` to find the element from `trigger.selector`, call `.click()` (or `.fill()` + `.click()` for forms), then call `waitForDataLayerEvent()` to assert the push. If `trigger.selector` is missing from the spec, use a best-guess selector based on the event name and add a comment: `// TODO: confirm selector with engineering`
 
 ## Error messages
 All `expect()` calls must use the second argument:
