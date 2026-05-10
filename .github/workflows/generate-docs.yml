@@ -1,4 +1,4 @@
-name: Generate Docs
+name: Generate Tracking Concept for Devs
 
 on:
   push:
