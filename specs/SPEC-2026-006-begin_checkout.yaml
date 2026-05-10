@@ -1,4 +1,4 @@
-spec_id: SPEC-2026-006-begin_checkout
+spec_id: SPEC-2026-001-begin_checkout
 version: 1.0.0
 status: draft
 owner: Analytics Team
@@ -18,22 +18,17 @@ events:
       items: "DL - cart_items"
     dataLayer:
       event: begin_checkout
-      event_category: ecommerce
-      event_label: checkout_start
-      currency: "{{DL - currency}}"
-      value: "{{DL - cart_total}}"
-      items: "{{DL - cart_items}}"
-    ga4_mapping:
-      event_name: begin_checkout
-      parameters:
+      ecommerce:
         currency: "{{DL - currency}}"
         value: "{{DL - cart_total}}"
         items: "{{DL - cart_items}}"
-    gtm_notes: "Standard GA4 ecommerce event. Ensure cart_items array contains item_id, item_name, price, quantity for each item."
+    ga4_mapping:
+      event_name: begin_checkout
+    gtm_notes: "Standard GA4 ecommerce event. Fire on checkout button click. Ensure ecommerce object is cleared before push."
 
 acceptance_criteria:
   - "Event fires once per checkout button click"
   - "Currency is valid ISO 4217 code"
-  - "Value matches total cart value including tax and shipping"
-  - "Items array contains all required fields for each cart item"
-  - "Event appears in GA4 DebugView with correct ecommerce parameters"
+  - "Value matches total cart value"
+  - "Items array contains all cart items with required fields"
+  - "Verified in GA4 DebugView before merge"
