@@ -1,4 +1,4 @@
-name: Generate Tests
+name: Generate Playwright dataLayer Test
 
 on:
   push:
