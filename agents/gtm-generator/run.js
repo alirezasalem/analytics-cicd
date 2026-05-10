@@ -22,7 +22,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ─── Config ──────────────────────────────────────────────────────────────────
 
 const PIPELINE_CONFIG_PATH = 'pipeline.config.yaml';
-const OUTPUT_DIR           = 'gtm';
+const OUTPUT_DIR           = 'gtm-assets';
 const FALLBACK_MEASUREMENT_ID = 'G-XXXXXXXXXX';
 
 // IDs start here so they don't clash with GTM's own built-in IDs (1–4 range)
