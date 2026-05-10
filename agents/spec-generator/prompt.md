@@ -91,6 +91,29 @@ acceptance_criteria:
 
 ---
 
+## GA4 Ecommerce events
+
+If the event is a standard GA4 ecommerce event (`begin_checkout`, `add_to_cart`,
+`purchase`, `view_item`, `view_cart`, `remove_from_cart`, `add_payment_info`,
+`add_shipping_info`), the `dataLayer` block **must** nest ecommerce fields under
+an `ecommerce` key, preceded by a `dataLayer.push({ ecommerce: null })` clear.
+
+Correct shape:
+```yaml
+dataLayer:
+  event: begin_checkout
+  ecommerce:
+    currency: "{{DL - currency}}"
+    value: "{{DL - cart_total}}"
+    items: "{{DL - cart_items}}"
+```
+
+Never put `currency`, `value`, or `items` as top-level keys in the `dataLayer`
+block for ecommerce events. `event_category` and `event_label` are also not
+needed for standard GA4 ecommerce events — omit them.
+
+---
+
 ## Behaviour rules
 
 - If the brief mentions A/B testing or experiments, add an `experiment_id` parameter.
