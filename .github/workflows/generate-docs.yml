@@ -1,0 +1,76 @@
+name: Generate Docs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'specs/**.yaml'
+
+  workflow_dispatch:
+    inputs:
+      spec_file:
+        description: 'Path to spec YAML (e.g. specs/SPEC-2026-001-page_view.yaml)'
+        required: true
+
+jobs:
+  generate-docs:
+    name: Generate implementation docs from spec
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install doc-generator dependencies
+        run: |
+          cd agents/doc-generator
+          npm install
+
+      - name: Resolve spec files
+        id: changed-specs
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            CHANGED="${{ github.event.inputs.spec_file }}"
+          else
+            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+              | grep '^specs/.*\.yaml$' || true)
+          fi
+          echo "specs<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "Specs to process:"
+          echo "$CHANGED"
+
+      - name: Generate implementation docs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          while IFS= read -r spec_file; do
+            spec_file=$(echo "$spec_file" | tr -d '[:space:]')
+            [ -z "$spec_file" ] && continue
+            echo "→ Generating doc for: $spec_file"
+            node agents/doc-generator/run.js --spec "$spec_file"
+          done <<< "${{ steps.changed-specs.outputs.specs }}"
+
+      - name: Commit generated docs
+        run: |
+          git config user.name  "analytics-bot"
+          git config user.email "analytics-bot@github-actions"
+          git add implementation/
+          if git diff --staged --quiet; then
+            echo "No files changed — nothing to commit."
+          else
+            git commit -m "chore: auto-generate docs from spec [skip ci]"
+            git push
+          fi
