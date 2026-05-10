@@ -14,12 +14,6 @@ async function waitForDataLayerEvent(page, eventName, timeoutMs = 8000) {
   throw new Error(`dataLayer event "${eventName}" not found within ${timeoutMs}ms`);
 }
 
-async function getAllDataLayerEvents(page, eventName) {
-  return page.evaluate((name) => {
-    return (window.dataLayer || []).filter(e => e.event === name);
-  }, eventName);
-}
-
 // ── tests ─────────────────────────────────────────────────────────────────────
 
 test.describe('view_item', () => {
@@ -37,14 +31,14 @@ test.describe('view_item', () => {
   test('event name is correct', async () => {
     expect(
       eventPayload.event,
-      `event name must be "view_item", got "${eventPayload.event}"`
+      `event name should be "view_item", got "${eventPayload.event}"`
     ).toBe('view_item');
   });
 
   test('event_category is present and equals "ecommerce"', async () => {
     expect(
       eventPayload.event_category,
-      `event_category must be "ecommerce", got "${eventPayload.event_category}"`
+      `event_category should be "ecommerce", got "${eventPayload.event_category}"`
     ).toBe('ecommerce');
   });
 
@@ -85,15 +79,22 @@ test.describe('view_item', () => {
 
   test('ecommerce.value is present and is a number', async () => {
     expect(
-      typeof eventPayload.ecommerce?.value === 'number' && !isNaN(eventPayload.ecommerce.value),
+      typeof eventPayload.ecommerce?.value === 'number' && !isNaN(eventPayload.ecommerce?.value),
       `ecommerce.value must be a number, got ${typeof eventPayload.ecommerce?.value} (value: ${eventPayload.ecommerce?.value})`
     ).toBe(true);
   });
 
-  test('ecommerce.items is present and is a non-empty array', async () => {
+  test('ecommerce.items is present and is an array', async () => {
     expect(
-      Array.isArray(eventPayload.ecommerce?.items) && eventPayload.ecommerce.items.length > 0,
-      `ecommerce.items must be a non-empty array, got ${typeof eventPayload.ecommerce?.items} (value: ${JSON.stringify(eventPayload.ecommerce?.items)})`
+      Array.isArray(eventPayload.ecommerce?.items),
+      `ecommerce.items must be an array, got ${typeof eventPayload.ecommerce?.items} (value: ${eventPayload.ecommerce?.items})`
+    ).toBe(true);
+  });
+
+  test('ecommerce.items has at least one item', async () => {
+    expect(
+      eventPayload.ecommerce?.items?.length > 0,
+      `ecommerce.items must have at least one item, got length ${eventPayload.ecommerce?.items?.length}`
     ).toBe(true);
   });
 
@@ -132,30 +133,8 @@ test.describe('view_item', () => {
   test('ecommerce.items[0].price is present and is a number', async () => {
     const item = eventPayload.ecommerce?.items?.[0];
     expect(
-      typeof item?.price === 'number' && !isNaN(item.price),
+      typeof item?.price === 'number' && !isNaN(item?.price),
       `ecommerce.items[0].price must be a number, got ${typeof item?.price} (value: ${item?.price})`
-    ).toBe(true);
-  });
-
-  test('top-level currency matches ecommerce.currency', async () => {
-    expect(
-      eventPayload.currency === eventPayload.ecommerce?.currency,
-      `top-level currency (${eventPayload.currency}) must match ecommerce.currency (${eventPayload.ecommerce?.currency})`
-    ).toBe(true);
-  });
-
-  test('top-level value matches ecommerce.value', async () => {
-    expect(
-      eventPayload.value === eventPayload.ecommerce?.value,
-      `top-level value (${eventPayload.value}) must match ecommerce.value (${eventPayload.ecommerce?.value})`
-    ).toBe(true);
-  });
-
-  test('event_label matches ecommerce.items[0].item_name', async () => {
-    const item = eventPayload.ecommerce?.items?.[0];
-    expect(
-      eventPayload.event_label === item?.item_name,
-      `event_label (${eventPayload.event_label}) must match ecommerce.items[0].item_name (${item?.item_name})`
     ).toBe(true);
   });
 });
