@@ -72,5 +72,6 @@ jobs:
             echo "No files changed — nothing to commit."
           else
             git commit -m "chore: auto-generate docs from spec [skip ci]"
+            git pull --rebase origin main
             git push
           fi
