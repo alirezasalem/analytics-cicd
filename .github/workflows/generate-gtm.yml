@@ -58,5 +58,6 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "chore: generate GTM config [skip ci]"
-            git push
+            git pull --rebase origin main
+            git push --force-with-lease
           fi
