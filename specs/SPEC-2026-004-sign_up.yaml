@@ -1,0 +1,33 @@
+spec_id: SPEC-2026-001-sign_up
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in brief
+feature_brief_ref: NEEDS_CLARIFICATION: feature brief reference not provided
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: sign_up
+    trigger:
+      action: form_submit
+      selector: NEEDS_CLARIFICATION: signup form selector not specified
+      page_path: NEEDS_CLARIFICATION: signup page path not specified
+    parameters:
+      user_id: "DL - user_id"
+      sign_up_method: "DL - sign_up_method"
+    dataLayer:
+      event: sign_up
+      event_category: user_engagement
+      user_id: "{{DL - user_id}}"
+      sign_up_method: "{{DL - sign_up_method}}"
+    ga4_mapping:
+      event_name: sign_up
+      custom_dimensions:
+        cd_sign_up_method: "{{DL - sign_up_method}}"
+    gtm_notes: "Fire on successful account creation. Ensure user_id is available in dataLayer before trigger fires."
+
+acceptance_criteria:
+  - "Event fires only once per successful account creation"
+  - "sign_up_method parameter correctly identifies the authentication method used"
+  - "user_id is populated and matches the newly created account ID"
+  - "Verified in GA4 DebugView before deployment"
