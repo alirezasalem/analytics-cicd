@@ -37,7 +37,7 @@ events:
     ga4_mapping:
       event_name: add_to_cart
       custom_dimensions: {}
-    gtm_notes: "Fire on successful cart API response (HTTP 2xx) only. Requires custom event from application layer after API success. Clear ecommerce object before push. Implement debouncing for duplicate prevention."
+    gtm_notes: "Fire on successful cart API response (HTTP 2xx) only. Requires custom event from application layer after API success. Clear ecommerce object before push. Implement debounce for duplicate prevention."
 
 acceptance_criteria:
   - "Event fires only after successful cart API response (HTTP 2xx), not on button click"
@@ -45,6 +45,6 @@ acceptance_criteria:
   - "Single event per add-to-cart action regardless of quantity"
   - "All required ecommerce parameters populated from cart API response"
   - "Currency matches displayed/transactional currency"
-  - "Duplicate fires prevented with per-request debouncing"
+  - "Duplicate fires prevented with per-request guard"
   - "Failed API calls (4xx/5xx) suppress the dataLayer push"
   - "Verified in GA4 DebugView with complete ecommerce object structure"
