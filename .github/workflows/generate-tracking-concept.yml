@@ -16,6 +16,7 @@ on:
 jobs:
   generate-docs:
     name: Generate tracking concept docs from spec
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
 
     permissions:

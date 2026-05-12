@@ -17,6 +17,7 @@ on:
 jobs:
   generate-gtm:
     name: Generate GTM client-side export
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
 
     permissions:
