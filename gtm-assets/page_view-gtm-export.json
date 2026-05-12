@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-12 21:12:37",
+  "exportTime": "2026-05-12 21:20:16",
   "containerVersion": {
     "path": "accounts/0000000000/containers/000000000/versions/0",
     "accountId": "0000000000",
@@ -15,7 +15,7 @@
       "usageContext": [
         "WEB"
       ],
-      "fingerprint": "1778620357703",
+      "fingerprint": "1778620816626",
       "features": {
         "supportUserPermissions": true,
         "supportEnvironments": true,
@@ -93,7 +93,7 @@
             "value": "G-XXXXXXXXXX"
           }
         ],
-        "fingerprint": "1778620357704",
+        "fingerprint": "1778620816627",
         "firingTriggerId": [
           "101"
         ],
@@ -130,7 +130,7 @@
             ]
           }
         ],
-        "fingerprint": "1778620357703"
+        "fingerprint": "1778620816626"
       }
     ],
     "variable": [
@@ -157,7 +157,7 @@
             "value": "event_category"
           }
         ],
-        "fingerprint": "1778620357702",
+        "fingerprint": "1778620816626",
         "formatValue": {}
       },
       {
@@ -183,7 +183,7 @@
             "value": "event_label"
           }
         ],
-        "fingerprint": "1778620357703",
+        "fingerprint": "1778620816627",
         "formatValue": {}
       }
     ],
@@ -219,6 +219,6 @@
         "name": "Event"
       }
     ],
-    "fingerprint": "1778620357705"
+    "fingerprint": "1778620816628"
   }
 }
