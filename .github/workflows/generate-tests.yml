@@ -67,7 +67,7 @@ jobs:
         run: |
           git config user.name  "analytics-bot"
           git config user.email "analytics-bot@github-actions"
-          git add playwright-DL-tests/
+          git add playwright-datalayer-tests/
           if git diff --staged --quiet; then
             echo "No files changed — nothing to commit."
           else

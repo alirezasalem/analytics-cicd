@@ -14,7 +14,7 @@ const credentials =
     : undefined;
 
 export default defineConfig({
-  testDir: './playwright-DL-tests',
+  testDir: './playwright-datalayer-tests',
   timeout: 30_000,
   retries: 1,
   reporter: [
