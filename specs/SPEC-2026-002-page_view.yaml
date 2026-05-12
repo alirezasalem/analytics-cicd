@@ -1,0 +1,34 @@
+spec_id: SPEC-2026-001-page_view
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in brief
+feature_brief_ref: NEEDS_CLARIFICATION: feature brief reference not provided
+generated_by: claude-api-agent
+created_at: NEEDS_CLARIFICATION: timestamp will be set by pipeline
+
+events:
+  - name: page_view
+    trigger:
+      action: page_load
+      selector: NEEDS_CLARIFICATION: no selector needed for page load events
+      page_path: NEEDS_CLARIFICATION: specific page path not specified
+    parameters:
+      user_id: "DL - user_id"
+      page_type: "DL - page_type"
+      page_category: "DL - page_category"
+    dataLayer:
+      event: page_view
+      event_category: engagement
+      event_label: "{{DL - page_type}}"
+    ga4_mapping:
+      event_name: page_view
+      custom_dimensions:
+        cd_user_id: "{{DL - user_id}}"
+        cd_page_type: "{{DL - page_type}}"
+        cd_page_category: "{{DL - page_category}}"
+    gtm_notes: "Fire on DOM Ready. Ensure dataLayer variables are populated before trigger fires."
+
+acceptance_criteria:
+  - "Event fires once per page load, immediately after DOM ready"
+  - "All three parameters (user_id, page_type, page_category) are populated from dataLayer"
+  - "Verified in GA4 DebugView that custom dimensions are properly mapped"
