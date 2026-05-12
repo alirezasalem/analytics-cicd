@@ -1,4 +1,4 @@
-# doc-generator
+# tracking-concept-generator
 
 Reads a merged analytics spec YAML and generates a developer-ready implementation Markdown doc for each event — one file per event, written to `implementation/<event_name>.md`.
 
@@ -26,7 +26,7 @@ See [`implementation/view_item.example.md`](../../implementation/view_item.examp
 ## Local usage (dev convenience)
 
 ```bash
-cd agents/doc-generator
+cd agents/tracking-concept-generator
 npm install
 
 ANTHROPIC_API_KEY=sk-... node run.js --spec specs/SPEC-2025-001.yaml
@@ -58,7 +58,7 @@ To regenerate docs without a spec change, use **manual dispatch** from the GitHu
 ## Files
 
 ```
-agents/doc-generator/
+agents/tracking-concept-generator/
   prompt.md       ← System prompt — controls doc structure and writing rules
   run.js          ← CLI entry point
   package.json    ← Dependencies (yaml@2)

@@ -32,9 +32,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install doc-generator dependencies
+      - name: Install tracking-concept-generator dependencies
         run: |
-          cd agents/doc-generator
+          cd agents/tracking-concept-generator
           npm install
 
       - name: Resolve spec files
@@ -60,7 +60,7 @@ jobs:
             spec_file=$(echo "$spec_file" | tr -d '[:space:]')
             [ -z "$spec_file" ] && continue
             echo "→ Generating doc for: $spec_file"
-            node agents/doc-generator/run.js --spec "$spec_file"
+            node agents/tracking-concept-generator/run.js --spec "$spec_file"
           done <<< "${{ steps.changed-specs.outputs.specs }}"
 
       - name: Commit generated docs
