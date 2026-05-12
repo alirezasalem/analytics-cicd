@@ -22,7 +22,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ── config ────────────────────────────────────────────────────────────────────
 
 const SPEC_PATH = process.argv[2];
-const OUTPUT_DIR = path.resolve('tests/playwright');
+const OUTPUT_DIR = path.resolve('playwright-DL-tests');
 const PROMPT_PATH = path.join(__dirname, 'prompt.md');
 const MODEL = 'claude-opus-4-5';
 const MAX_TOKENS = 4096;

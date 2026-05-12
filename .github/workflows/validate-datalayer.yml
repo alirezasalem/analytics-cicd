@@ -10,7 +10,7 @@ name: Validate dataLayer
 #
 # Manual run inputs:
 #   test_url      — required
-#   event_name    — optional; if set, only runs tests/playwright/[event_name].spec.js
+#   event_name    — optional; if set, only runs playwright-DL-tests/[event_name].spec.js
 #   test_username — optional
 #   test_password — optional
 
@@ -86,7 +86,7 @@ jobs:
         run: |
           EVENT_NAME="${{ steps.extract-url.outputs.EVENT_NAME }}"
           if [ -n "$EVENT_NAME" ]; then
-            TEST_FILE="tests/playwright/${EVENT_NAME}.spec.js"
+            TEST_FILE="playwright-DL-tests/${EVENT_NAME}.spec.js"
             if [ ! -f "$TEST_FILE" ]; then
               echo "::error::Test file not found: $TEST_FILE"
               echo "::error::Run the 'Generate Docs and Tests' workflow first for this event."
@@ -95,8 +95,8 @@ jobs:
             echo "target=$TEST_FILE" >> $GITHUB_OUTPUT
             echo "Resolved test file: $TEST_FILE"
           else
-            echo "target=tests/playwright/" >> $GITHUB_OUTPUT
-            echo "Resolved test target: all files in tests/playwright/"
+            echo "target=playwright-DL-tests/" >> $GITHUB_OUTPUT
+            echo "Resolved test target: all files in playwright-DL-tests/"
           fi
 
       # ── Node + Playwright setup ─────────────────────────────────────────────

@@ -3,11 +3,11 @@ name: Generate Spec from Brief
 on:
   push:
     paths:
-      - "specs/briefs/FB-*.md"
+      - "feature_briefs/FB-*.md"
   workflow_dispatch:
     inputs:
       brief_file:
-        description: "Path to feature brief (e.g. specs/briefs/FB-002.md)"
+        description: "Path to feature brief (e.g. feature_briefs/FB-002.md)"
         required: true
         type: string
 
@@ -44,7 +44,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "file=${{ inputs.brief_file }}" >> "$GITHUB_OUTPUT"
           else
-            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'specs/briefs/' | grep '^specs/briefs/FB-.*\.md$' | head -1)
+            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'feature_briefs/' | grep '^feature_briefs/FB-.*\.md$' | head -1)
             echo "Detected brief file: $CHANGED"
             if [[ -z "$CHANGED" ]]; then
               echo "ERROR: No FB-*.md brief file detected in this commit"
