@@ -73,5 +73,6 @@ jobs:
             echo "No files changed — nothing to commit."
           else
             git commit -m "chore: auto-generate tests from spec [skip ci]"
-            git push origin HEAD:main --force-with-lease=HEAD
+            git fetch origin main
+            git push origin HEAD:main --force-with-lease=origin/main
           fi
