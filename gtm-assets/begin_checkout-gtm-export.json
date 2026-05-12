@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-12 16:46:03",
+  "exportTime": "2026-05-12 16:51:15",
   "containerVersion": {
     "path": "accounts/0000000000/containers/000000000/versions/0",
     "accountId": "0000000000",
@@ -15,7 +15,7 @@
       "usageContext": [
         "WEB"
       ],
-      "fingerprint": "1778604363435",
+      "fingerprint": "1778604675717",
       "features": {
         "supportUserPermissions": true,
         "supportEnvironments": true,
@@ -138,7 +138,7 @@
             "value": "G-XXXXXXXXXX"
           }
         ],
-        "fingerprint": "1778604363436",
+        "fingerprint": "1778604675718",
         "firingTriggerId": [
           "101"
         ],
@@ -175,7 +175,7 @@
             ]
           }
         ],
-        "fingerprint": "1778604363435"
+        "fingerprint": "1778604675717"
       }
     ],
     "variable": [
@@ -202,7 +202,7 @@
             "value": "ecommerce"
           }
         ],
-        "fingerprint": "1778604363435",
+        "fingerprint": "1778604675717",
         "formatValue": {}
       },
       {
@@ -228,7 +228,7 @@
             "value": "ecommerce.currency"
           }
         ],
-        "fingerprint": "1778604363436",
+        "fingerprint": "1778604675718",
         "formatValue": {}
       },
       {
@@ -254,7 +254,7 @@
             "value": "ecommerce.value"
           }
         ],
-        "fingerprint": "1778604363437",
+        "fingerprint": "1778604675719",
         "formatValue": {}
       },
       {
@@ -280,7 +280,7 @@
             "value": "ecommerce.items"
           }
         ],
-        "fingerprint": "1778604363438",
+        "fingerprint": "1778604675720",
         "formatValue": {}
       },
       {
@@ -306,7 +306,7 @@
             "value": "ecommerce.checkout_step"
           }
         ],
-        "fingerprint": "1778604363439",
+        "fingerprint": "1778604675721",
         "formatValue": {}
       }
     ],
@@ -342,6 +342,6 @@
         "name": "Event"
       }
     ],
-    "fingerprint": "1778604363437"
+    "fingerprint": "1778604675719"
   }
 }
