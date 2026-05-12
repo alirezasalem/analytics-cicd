@@ -74,5 +74,4 @@ jobs:
           else
             git commit -m "chore: auto-generate tests from spec [skip ci]"
             git push origin HEAD:main --force-with-lease=HEAD
-            git push --force-with-lease
           fi
