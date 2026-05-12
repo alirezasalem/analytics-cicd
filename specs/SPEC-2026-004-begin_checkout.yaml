@@ -1,0 +1,39 @@
+spec_id: SPEC-2026-001-begin_checkout
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in brief
+feature_brief_ref: NEEDS_CLARIFICATION: feature brief reference not provided
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: begin_checkout
+    trigger:
+      action: page_load
+      page_path: /checkout
+    parameters:
+      checkout_step: "DL - checkout_step"
+      currency: "DL - currency"
+      value: "DL - cart_total"
+      items: "DL - cart_items"
+    dataLayer:
+      event: begin_checkout
+      ecommerce:
+        currency: "{{DL - currency}}"
+        value: "{{DL - cart_total}}"
+        items: "{{DL - cart_items}}"
+        checkout_step: "{{DL - checkout_step}}"
+    ga4_mapping:
+      event_name: begin_checkout
+      parameters:
+        currency: "{{DL - currency}}"
+        value: "{{DL - cart_total}}"
+        items: "{{DL - cart_items}}"
+        checkout_step: "{{DL - checkout_step}}"
+    gtm_notes: "Fire on page load when user reaches /checkout page. Standard GA4 ecommerce event."
+
+acceptance_criteria:
+  - "Event fires once per checkout page load"
+  - "Currency, value, and items are populated from dataLayer"
+  - "checkout_step parameter indicates first step of checkout process"
+  - "Verified in GA4 DebugView with proper ecommerce structure"
