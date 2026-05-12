@@ -1,0 +1,33 @@
+spec_id: SPEC-2026-001-scroll_depth
+version: 1.0.0
+status: draft
+owner: NEEDS_CLARIFICATION: owner not specified in brief
+feature_brief_ref: NEEDS_CLARIFICATION: feature brief reference not provided
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: scroll_depth
+    trigger:
+      action: custom
+      selector: NEEDS_CLARIFICATION: scroll tracking uses percentage threshold not CSS selector
+      page_path: NEEDS_CLARIFICATION: page path not specified in brief
+    parameters:
+      scroll_percent: "DL - scroll_percent"
+      page_title: "DL - page_title"
+      page_url: "DL - page_url"
+    dataLayer:
+      event: scroll_depth
+      event_category: engagement
+      event_label: "50% scroll depth"
+      scroll_percent: 50
+    ga4_mapping:
+      event_name: scroll_depth
+      custom_dimensions:
+        cd_scroll_percent: "{{DL - scroll_percent}}"
+    gtm_notes: "Fire when user scrolls past 50% of page height. Use Scroll Depth trigger with 50% threshold."
+
+acceptance_criteria:
+  - "Event fires only once per page when 50% scroll depth is reached"
+  - "scroll_percent parameter accurately reflects 50% threshold"
+  - "Event does not fire on page load, only on actual scroll interaction"
