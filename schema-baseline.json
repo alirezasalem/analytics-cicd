@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T16:36:24.479Z",
+  "generated_at": "2026-05-17T20:40:43.287Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
   "specs": {
@@ -85,6 +85,28 @@
             "event_label",
             "method",
             "user_id"
+          ]
+        }
+      }
+    },
+    "SPEC-2026-001-purchase": {
+      "filename": "SPEC-2026-010-purchase.yaml",
+      "spec_id": "SPEC-2026-001-purchase",
+      "version": "1.0.0",
+      "events": {
+        "purchase": {
+          "parameters": [
+            "coupon",
+            "currency",
+            "items",
+            "shipping",
+            "tax",
+            "transaction_id",
+            "value"
+          ],
+          "dataLayer": [
+            "ecommerce",
+            "event"
           ]
         }
       }
