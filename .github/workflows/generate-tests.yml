@@ -75,5 +75,5 @@ jobs:
             git commit -m "chore: auto-generate tests from spec [skip ci]"
             git fetch origin main
             git rebase origin/main
-            git push origin HEAD:main
+            git push origin HEAD:main --force-with-lease=HEAD
           fi
