@@ -45,8 +45,8 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             CHANGED="${{ github.event.inputs.spec_file }}"
           elif [ "${{ github.event_name }}" = "workflow_run" ]; then
-            CHANGED=$(git diff --name-only HEAD~1 HEAD \
-              | grep '^specs/.*\.yaml$' || true)
+            CHANGED=$(git log --name-only --pretty=format: -10 \
+              | grep '^specs/.*\.yaml$' | head -1 || true)
           else
             CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
               | grep '^specs/.*\.yaml$' || true)
@@ -54,8 +54,7 @@ jobs:
           echo "specs<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          echo "Specs to process:"
-          echo "$CHANGED"
+          echo "Specs to process: $CHANGED"
 
       - name: Generate tracking concept docs
         env:
