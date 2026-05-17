@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T14:41:51.982Z",
+  "generated_at": "2026-05-17T15:04:48.538Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
   "specs": {
@@ -13,7 +13,6 @@
             "device_type",
             "page_location",
             "page_referrer",
-            "page_title",
             "user_id"
           ],
           "dataLayer": [
@@ -23,8 +22,29 @@
             "event_label",
             "page_location",
             "page_referrer",
-            "page_title",
             "user_id"
+          ]
+        }
+      }
+    },
+    "SPEC-2026-001-add_to_cart": {
+      "filename": "SPEC-2026-002-add_to_cart.yaml",
+      "spec_id": "SPEC-2026-001-add_to_cart",
+      "version": "1.0.0",
+      "events": {
+        "add_to_cart": {
+          "parameters": [
+            "currency",
+            "price",
+            "product_category",
+            "product_id",
+            "product_name",
+            "quantity",
+            "variant"
+          ],
+          "dataLayer": [
+            "ecommerce",
+            "event"
           ]
         }
       }
