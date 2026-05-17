@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T16:34:41.612Z",
+  "generated_at": "2026-05-17T16:36:10.084Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
   "specs": {
@@ -27,9 +27,9 @@
         }
       }
     },
-    "SPEC-2026-001-add_to_cart": {
+    "SPEC-2026-002-add_to_cart": {
       "filename": "SPEC-2026-002-add_to_cart.yaml",
-      "spec_id": "SPEC-2026-001-add_to_cart",
+      "spec_id": "SPEC-2026-002-add_to_cart",
       "version": "1.0.0",
       "events": {
         "add_to_cart": {
@@ -49,9 +49,9 @@
         }
       }
     },
-    "SPEC-2026-001-begin_checkout": {
+    "SPEC-2026-003-begin_checkout": {
       "filename": "SPEC-2026-003-begin_checkout.yaml",
-      "spec_id": "SPEC-2026-001-begin_checkout",
+      "spec_id": "SPEC-2026-003-begin_checkout",
       "version": "1.0.0",
       "events": {
         "begin_checkout": {
@@ -69,9 +69,9 @@
         }
       }
     },
-    "SPEC-2026-001-user_login": {
+    "SPEC-2026-006-login": {
       "filename": "SPEC-2026-006-login.yaml",
-      "spec_id": "SPEC-2026-001-user_login",
+      "spec_id": "SPEC-2026-006-login",
       "version": "1.0.0",
       "events": {
         "login": {
