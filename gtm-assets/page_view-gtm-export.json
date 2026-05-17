@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-17 10:37:30",
+  "exportTime": "2026-05-17 14:47:49",
   "containerVersion": {
     "path": "accounts/0000000000/containers/000000000/versions/0",
     "accountId": "0000000000",
@@ -15,7 +15,7 @@
       "usageContext": [
         "WEB"
       ],
-      "fingerprint": "1779014250979",
+      "fingerprint": "1779029269507",
       "features": {
         "supportUserPermissions": true,
         "supportEnvironments": true,
@@ -116,21 +116,6 @@
                   {
                     "type": "TEMPLATE",
                     "key": "parameter",
-                    "value": "page_title"
-                  },
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameterValue",
-                    "value": "{{DLV - page_title}}"
-                  }
-                ]
-              },
-              {
-                "type": "MAP",
-                "map": [
-                  {
-                    "type": "TEMPLATE",
-                    "key": "parameter",
                     "value": "user_id"
                   },
                   {
@@ -168,7 +153,7 @@
             "value": "G-XXXXXXXXXX"
           }
         ],
-        "fingerprint": "1779014250979",
+        "fingerprint": "1779029269508",
         "firingTriggerId": [
           "101"
         ],
@@ -205,7 +190,7 @@
             ]
           }
         ],
-        "fingerprint": "1779014250978"
+        "fingerprint": "1779029269507"
       }
     ],
     "variable": [
@@ -232,7 +217,7 @@
             "value": "event_category"
           }
         ],
-        "fingerprint": "1779014250978",
+        "fingerprint": "1779029269507",
         "formatValue": {}
       },
       {
@@ -258,7 +243,7 @@
             "value": "event_label"
           }
         ],
-        "fingerprint": "1779014250979",
+        "fingerprint": "1779029269508",
         "formatValue": {}
       },
       {
@@ -284,7 +269,7 @@
             "value": "page_location"
           }
         ],
-        "fingerprint": "1779014250980",
+        "fingerprint": "1779029269509",
         "formatValue": {}
       },
       {
@@ -310,39 +295,13 @@
             "value": "page_referrer"
           }
         ],
-        "fingerprint": "1779014250981",
+        "fingerprint": "1779029269510",
         "formatValue": {}
       },
       {
         "accountId": "0000000000",
         "containerId": "000000000",
         "variableId": "114",
-        "name": "DLV - page_title",
-        "type": "v",
-        "parameter": [
-          {
-            "type": "INTEGER",
-            "key": "dataLayerVersion",
-            "value": "2"
-          },
-          {
-            "type": "BOOLEAN",
-            "key": "setDefaultValue",
-            "value": "false"
-          },
-          {
-            "type": "TEMPLATE",
-            "key": "name",
-            "value": "page_title"
-          }
-        ],
-        "fingerprint": "1779014250982",
-        "formatValue": {}
-      },
-      {
-        "accountId": "0000000000",
-        "containerId": "000000000",
-        "variableId": "115",
         "name": "DLV - user_id",
         "type": "v",
         "parameter": [
@@ -362,13 +321,13 @@
             "value": "user_id"
           }
         ],
-        "fingerprint": "1779014250983",
+        "fingerprint": "1779029269511",
         "formatValue": {}
       },
       {
         "accountId": "0000000000",
         "containerId": "000000000",
-        "variableId": "116",
+        "variableId": "115",
         "name": "DLV - device_type",
         "type": "v",
         "parameter": [
@@ -388,7 +347,7 @@
             "value": "device_type"
           }
         ],
-        "fingerprint": "1779014250984",
+        "fingerprint": "1779029269512",
         "formatValue": {}
       }
     ],
@@ -424,6 +383,6 @@
         "name": "Event"
       }
     ],
-    "fingerprint": "1779014250981"
+    "fingerprint": "1779029269509"
   }
 }
