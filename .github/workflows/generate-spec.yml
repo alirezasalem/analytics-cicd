@@ -108,3 +108,29 @@ jobs:
             2. Fill any `NEEDS_CLARIFICATION` fields
             3. Approve and merge
           labels: "spec,auto-generated,needs-review"
+
+      - name: Run schema drift check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          node agents/schema-guardian/diff.js 2>&1 > /tmp/drift-report.txt
+          EXIT_CODE=$?
+          set -e
+
+          cat /tmp/drift-report.txt
+
+          # Post comment on the PR if one was created
+          PR_NUMBER=$(gh pr list --head "spec/auto-fb-${{ steps.brief.outputs.file }}" --json number --jq '.[0].number' 2>/dev/null)
+
+          if [[ -n "$PR_NUMBER" && "$PR_NUMBER" != "null" ]]; then
+            gh pr comment "$PR_NUMBER" --body "$(cat /tmp/drift-report.txt)"
+            echo "Posted drift report to PR #$PR_NUMBER"
+          else
+            echo "No PR found — drift report logged above"
+          fi
+
+          if [[ $EXIT_CODE -ne 0 ]]; then
+            echo "Breaking schema changes detected."
+            exit 1
+          fi
