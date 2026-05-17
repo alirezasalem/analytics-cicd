@@ -42,12 +42,15 @@ jobs:
       - name: Run GTM generator
         run: |
           SPEC_FILE="${{ github.event.inputs.spec_file }}"
+          if [ -z "$SPEC_FILE" ]; then
+            SPEC_FILE=$(git log --name-only --pretty=format: -10 \
+              | grep '^specs/.*\.yaml$' | head -1 || true)
+          fi
           if [ -n "$SPEC_FILE" ]; then
-            echo "Running with specified spec: $SPEC_FILE"
+            echo "Running with spec: $SPEC_FILE"
             node agents/gtm-generator/run.js "$SPEC_FILE"
           else
-            echo "Auto-detecting spec from last commit"
-            node agents/gtm-generator/run.js
+            echo "No spec found — skipping"
           fi
 
       - name: Commit and push GTM export(s)
