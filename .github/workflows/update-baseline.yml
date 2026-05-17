@@ -1,6 +1,11 @@
 name: Update Schema Baseline
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "specs/**"
   workflow_dispatch:
     inputs:
       reason:
