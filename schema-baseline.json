@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T15:04:48.538Z",
+  "generated_at": "2026-05-17T16:23:02.875Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
   "specs": {
@@ -45,6 +45,46 @@
           "dataLayer": [
             "ecommerce",
             "event"
+          ]
+        }
+      }
+    },
+    "SPEC-2026-001-begin_checkout": {
+      "filename": "SPEC-2026-003-begin_checkout.yaml",
+      "spec_id": "SPEC-2026-001-begin_checkout",
+      "version": "1.0.0",
+      "events": {
+        "begin_checkout": {
+          "parameters": [
+            "checkout_option",
+            "coupon",
+            "currency",
+            "items",
+            "value"
+          ],
+          "dataLayer": [
+            "ecommerce",
+            "event"
+          ]
+        }
+      }
+    },
+    "SPEC-2026-001-user_login": {
+      "filename": "SPEC-2026-006-login.yaml",
+      "spec_id": "SPEC-2026-001-user_login",
+      "version": "1.0.0",
+      "events": {
+        "login": {
+          "parameters": [
+            "method",
+            "user_id"
+          ],
+          "dataLayer": [
+            "event",
+            "event_category",
+            "event_label",
+            "method",
+            "user_id"
           ]
         }
       }
