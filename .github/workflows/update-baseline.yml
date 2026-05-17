@@ -58,7 +58,7 @@ Reason: $REASON"
 
       - name: Confirm baseline update
         run: |
-          echo "✅ schema-baseline.json has been updated on main."
+          echo "schema-baseline.json has been updated on main."
           echo "Approved by: ${{ github.actor }}"
           echo "Reason: ${{ github.event.inputs.reason }}"
           echo ""
