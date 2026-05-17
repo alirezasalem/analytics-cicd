@@ -1,12 +1,13 @@
 name: Generate GTM Config
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "Generate Playwright dataLayer Test"
+    types:
+      - completed
     branches:
       - main
-    paths:
-      - 'specs/**/*.yaml'
-
   workflow_dispatch:
     inputs:
       spec_file:

@@ -1,12 +1,13 @@
 name: Generate Tracking Concept for Devs
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "Update Schema Baseline"
+    types:
+      - completed
     branches:
       - main
-    paths:
-      - 'specs/**.yaml'
-
   workflow_dispatch:
     inputs:
       spec_file:

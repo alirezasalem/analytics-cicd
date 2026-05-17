@@ -1,17 +1,18 @@
 name: Generate Playwright dataLayer Test
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "Generate Tracking Concept for Devs"
+    types:
+      - completed
     branches:
       - main
-    paths:
-      - 'specs/**.yaml'
-
   workflow_dispatch:
     inputs:
       spec_file:
         description: 'Path to spec YAML (e.g. specs/SPEC-2026-001-page_view.yaml)'
-        required: true
+        required: false
 
 jobs:
   generate-tests:
