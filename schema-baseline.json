@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T20:40:43.287Z",
+  "generated_at": "2026-05-17T21:33:37.920Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
   "specs": {
@@ -107,6 +107,26 @@
           "dataLayer": [
             "ecommerce",
             "event"
+          ]
+        }
+      }
+    },
+    "SPEC-2026-011-sign_up": {
+      "filename": "SPEC-2026-011-sign_up.yaml",
+      "spec_id": "SPEC-2026-011-sign_up",
+      "version": "1.0.0",
+      "events": {
+        "sign_up": {
+          "parameters": [
+            "method",
+            "user_id"
+          ],
+          "dataLayer": [
+            "event",
+            "event_category",
+            "event_label",
+            "method",
+            "user_id"
           ]
         }
       }
