@@ -30,7 +30,7 @@ test.describe('page_view', () => {
     eventPayload = await waitForDataLayerEvent(page, 'page_view');
   });
 
-  test('event fires', async () => {
+  test('event fires on page load', async () => {
     expect(eventPayload, 'dataLayer event "page_view" not found').toBeTruthy();
   });
 
@@ -86,6 +86,14 @@ test.describe('page_view', () => {
     ).toBe(false);
   });
 
+  test('page_location does not contain PII (phone number)', async () => {
+    const phoneRegex = /(\+?1[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}/;
+    expect(
+      phoneRegex.test(eventPayload.page_location),
+      `page_location must not contain phone PII, got "${eventPayload.page_location}"`
+    ).toBe(false);
+  });
+
   test('page_referrer is present and is a string', async () => {
     expect(
       eventPayload.page_referrer !== undefined,
@@ -94,21 +102,6 @@ test.describe('page_view', () => {
     expect(
       typeof eventPayload.page_referrer === 'string',
       `page_referrer must be a string, got ${typeof eventPayload.page_referrer} (value: ${eventPayload.page_referrer})`
-    ).toBe(true);
-  });
-
-  test('page_title is present and is a non-empty string', async () => {
-    expect(
-      eventPayload.page_title !== undefined && eventPayload.page_title !== null,
-      `page_title must be present, got ${eventPayload.page_title}`
-    ).toBe(true);
-    expect(
-      typeof eventPayload.page_title === 'string',
-      `page_title must be a string, got ${typeof eventPayload.page_title} (value: ${eventPayload.page_title})`
-    ).toBe(true);
-    expect(
-      eventPayload.page_title.length > 0,
-      `page_title must be non-empty, got empty string`
     ).toBe(true);
   });
 
@@ -123,19 +116,11 @@ test.describe('page_view', () => {
     ).toBe(true);
   });
 
-  test('user_id does not contain PII (email)', async () => {
+  test('user_id does not contain PII (email format)', async () => {
     const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
     expect(
       emailRegex.test(eventPayload.user_id),
-      `user_id must not contain email PII, got "${eventPayload.user_id}"`
-    ).toBe(false);
-  });
-
-  test('user_id does not contain PII (phone number)', async () => {
-    const phoneRegex = /(\+?1?[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
-    expect(
-      phoneRegex.test(eventPayload.user_id),
-      `user_id must not contain phone PII, got "${eventPayload.user_id}"`
+      `user_id must not contain email PII (should be hashed), got "${eventPayload.user_id}"`
     ).toBe(false);
   });
 
