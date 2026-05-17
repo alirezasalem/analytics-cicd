@@ -74,6 +74,5 @@ jobs:
           else
             git commit -m "chore: auto-generate docs from spec [skip ci]"
             git pull --rebase origin main
-            git pull --rebase origin main
-            git push --git push origin HEAD:main --force-with-lease=HEAD
+            git push origin HEAD:main --force-with-lease=HEAD
           fi
