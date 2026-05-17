@@ -113,10 +113,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "=== Restoring spec file for drift check ==="
+          SPEC_FILE="${{ env.spec_file }}"
+          BRANCH="spec/auto-fb-${{ steps.brief.outputs.file }}"
+
+          # Fetch the PR branch and restore the spec file to disk
+          git fetch origin "$BRANCH"
+          git checkout "origin/$BRANCH" -- "$SPEC_FILE"
+
           echo "=== Specs on disk ==="
           ls specs/
+
           echo "=== Baseline spec_ids ==="
           cat schema-baseline.json | grep spec_id
+
           echo "=== Running diff ==="
           set +e
           node agents/schema-guardian/diff.js 2>&1 > /tmp/drift-report.txt
@@ -125,8 +135,7 @@ jobs:
 
           cat /tmp/drift-report.txt
 
-          # Post comment on the PR if one was created
-          PR_NUMBER=$(gh pr list --head "spec/auto-fb-${{ steps.brief.outputs.file }}" --json number --jq '.[0].number' 2>/dev/null)
+          PR_NUMBER=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null)
 
           if [[ -n "$PR_NUMBER" && "$PR_NUMBER" != "null" ]]; then
             gh pr comment "$PR_NUMBER" --body "$(cat /tmp/drift-report.txt)"
