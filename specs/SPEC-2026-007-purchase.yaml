@@ -1,0 +1,42 @@
+spec_id: SPEC-2026-001-purchase
+version: 1.0.0
+status: draft
+owner: Product Analytics Team
+feature_brief_ref: FB-purchase-tracking
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+events:
+  - name: purchase
+    trigger:
+      action: page_load
+      page_path: /order-confirmation
+      selector: null
+    parameters:
+      transaction_id: "DL - transaction_id"
+      value: "DL - value"
+      tax: "DL - tax"
+      shipping: "DL - shipping"
+      currency: "DL - currency"
+      coupon: "DL - coupon"
+      items: "DL - items"
+    dataLayer:
+      event: purchase
+      ecommerce:
+        transaction_id: "{{DL - transaction_id}}"
+        value: "{{DL - value}}"
+        tax: "{{DL - tax}}"
+        shipping: "{{DL - shipping}}"
+        currency: "{{DL - currency}}"
+        coupon: "{{DL - coupon}}"
+        items: "{{DL - items}}"
+    ga4_mapping:
+      event_name: purchase
+      custom_dimensions: {}
+    gtm_notes: "Fire on Order Confirmation page load. Include deduplication logic to prevent duplicate firing on page refresh. Check transaction_id against localStorage registry."
+    acceptance_criteria:
+      - "Event fires only once per transaction_id, even if page is refreshed"
+      - "All monetary values are numeric, not formatted strings"
+      - "Items array contains all required product fields"
+      - "Event does not fire if transaction status is not successful"
+      - "Verified in GA4 DebugView with real transaction data"
