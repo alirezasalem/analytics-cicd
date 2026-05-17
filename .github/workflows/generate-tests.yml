@@ -44,6 +44,9 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             CHANGED="${{ github.event.inputs.spec_file }}"
+          elif [ "${{ github.event_name }}" = "workflow_run" ]; then
+            CHANGED=$(git diff --name-only HEAD~1 HEAD \
+              | grep '^specs/.*\.yaml$' || true)
           else
             CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
               | grep '^specs/.*\.yaml$' || true)
