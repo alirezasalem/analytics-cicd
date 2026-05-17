@@ -113,6 +113,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "=== Specs on disk ==="
+          ls specs/
+          echo "=== Baseline spec_ids ==="
+          cat schema-baseline.json | grep spec_id
+          echo "=== Running diff ==="
           set +e
           node agents/schema-guardian/diff.js 2>&1 > /tmp/drift-report.txt
           EXIT_CODE=$?
