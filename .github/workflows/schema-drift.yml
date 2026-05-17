@@ -35,25 +35,19 @@ jobs:
         id: diff
         run: |
           set +e
-          OUTPUT=$(node agents/schema-guardian/diff.js 2>&1)
+          node agents/schema-guardian/diff.js 2>&1 > /tmp/drift-report.txt
           EXIT_CODE=$?
           set -e
-
-          {
-            echo "comment<<SCHEMA_DRIFT_EOF"
-            echo "$OUTPUT"
-            echo "SCHEMA_DRIFT_EOF"
-          } >> "$GITHUB_OUTPUT"
-
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
-          echo "$OUTPUT"
+          cat /tmp/drift-report.txt
 
       - name: Post schema drift comment on PR
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const comment = `${{ steps.diff.outputs.comment }}`;
+            const fs = require('fs');
+            const comment = fs.readFileSync('/tmp/drift-report.txt', 'utf8');
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -61,7 +55,7 @@ jobs:
             });
 
             const existing = comments.find(c =>
-              c.user.type === 'Bot' && c.body.includes('🛡️ Schema Drift Report')
+              c.user.type === 'Bot' && c.body.includes('Schema Drift Report')
             );
 
             if (existing) {
