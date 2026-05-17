@@ -46,10 +46,7 @@ jobs:
           fi
           REASON="${{ github.event.inputs.reason }}"
           ACTOR="${{ github.actor }}"
-          git commit -m "chore: update schema baseline [skip ci]
-
-Approved by: $ACTOR
-Reason: $REASON"
+          git commit -m "chore: update schema baseline [skip ci] | Approved by: $ACTOR | Reason: $REASON"
           git push origin HEAD:main --force-with-lease=HEAD
 
       - name: Confirm baseline update
