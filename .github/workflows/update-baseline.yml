@@ -43,7 +43,7 @@ jobs:
           git add schema-baseline.json
 
           if git diff --cached --quiet; then
-            echo "ℹ️ No changes to baseline — already up to date."
+            echo "No changes to baseline — already up to date."
             exit 0
           fi
 
