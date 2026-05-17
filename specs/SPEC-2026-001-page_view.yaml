@@ -16,7 +16,7 @@ events:
     parameters:
       page_location: "DL - page_location"
       page_referrer: "DL - page_referrer"
-      page_title: "DL - page_title"
+
       user_id: "DL - user_id"
       device_type: "DL - device_type"
     dataLayer:
@@ -25,7 +25,7 @@ events:
       event_label: "{{DL - page_title}}"
       page_location: "{{DL - page_location}}"
       page_referrer: "{{DL - page_referrer}}"
-      page_title: "{{DL - page_title}}"
+
       user_id: "{{DL - user_id}}"
       device_type: "{{DL - device_type}}"
     ga4_mapping:
