@@ -80,7 +80,10 @@ jobs:
           fi
 
           mv "$TEMP_FILE" "$SPEC_FILE"
-
+          # Fix spec_id to match actual filename
+          SPEC_ID="${SPEC_FILE%.yaml}"
+          SPEC_ID="${SPEC_ID#specs/}"
+          sed -i "s/^spec_id:.*/spec_id: ${SPEC_ID}/" "$SPEC_FILE"
           echo "Brief : $BRIEF_FILE"
           echo "Event : $EVENT_NAME"
           echo "Output: $SPEC_FILE"
