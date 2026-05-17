@@ -1,6 +1,6 @@
 {
   "exportFormatVersion": 2,
-  "exportTime": "2026-05-17 16:36:27",
+  "exportTime": "2026-05-17 20:41:21",
   "containerVersion": {
     "path": "accounts/0000000000/containers/000000000/versions/0",
     "accountId": "0000000000",
@@ -15,7 +15,7 @@
       "usageContext": [
         "WEB"
       ],
-      "fingerprint": "1779035787518",
+      "fingerprint": "1779050481842",
       "features": {
         "supportUserPermissions": true,
         "supportEnvironments": true,
@@ -138,7 +138,7 @@
             "value": "G-XXXXXXXXXX"
           }
         ],
-        "fingerprint": "1779035787519",
+        "fingerprint": "1779050481843",
         "firingTriggerId": [
           "101"
         ],
@@ -175,7 +175,7 @@
             ]
           }
         ],
-        "fingerprint": "1779035787517"
+        "fingerprint": "1779050481842"
       }
     ],
     "variable": [
@@ -202,7 +202,7 @@
             "value": "ecommerce"
           }
         ],
-        "fingerprint": "1779035787517",
+        "fingerprint": "1779050481842",
         "formatValue": {}
       },
       {
@@ -228,7 +228,7 @@
             "value": "ecommerce.currency"
           }
         ],
-        "fingerprint": "1779035787518",
+        "fingerprint": "1779050481843",
         "formatValue": {}
       },
       {
@@ -254,7 +254,7 @@
             "value": "ecommerce.value"
           }
         ],
-        "fingerprint": "1779035787519",
+        "fingerprint": "1779050481844",
         "formatValue": {}
       },
       {
@@ -280,7 +280,7 @@
             "value": "ecommerce.coupon"
           }
         ],
-        "fingerprint": "1779035787520",
+        "fingerprint": "1779050481845",
         "formatValue": {}
       },
       {
@@ -306,7 +306,7 @@
             "value": "ecommerce.items"
           }
         ],
-        "fingerprint": "1779035787521",
+        "fingerprint": "1779050481846",
         "formatValue": {}
       }
     ],
@@ -342,6 +342,6 @@
         "name": "Event"
       }
     ],
-    "fingerprint": "1779035787520"
+    "fingerprint": "1779050481844"
   }
 }
