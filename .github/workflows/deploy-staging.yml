@@ -1,7 +1,11 @@
 name: Deploy to Staging
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "Generate GTM Config"
+    types:
+      - completed
     branches:
       - main
 
