@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-17T21:33:37.920Z",
+  "generated_at": "2026-05-18T13:13:47.065Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
   "specs": {
@@ -127,6 +127,26 @@
             "event_label",
             "method",
             "user_id"
+          ]
+        }
+      }
+    },
+    "SPEC-2026-012-add_payment_info": {
+      "filename": "SPEC-2026-012-add_payment_info.yaml",
+      "spec_id": "SPEC-2026-012-add_payment_info",
+      "version": "1.0.0",
+      "events": {
+        "add_payment_info": {
+          "parameters": [
+            "coupon",
+            "currency",
+            "items",
+            "payment_type",
+            "value"
+          ],
+          "dataLayer": [
+            "ecommerce",
+            "event"
           ]
         }
       }
