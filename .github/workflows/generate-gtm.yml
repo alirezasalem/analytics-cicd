@@ -43,12 +43,9 @@ jobs:
         run: |
           SPEC_FILE="${{ github.event.inputs.spec_file }}"
           if [ -z "$SPEC_FILE" ]; then
-            SPEC_FILE=$(git log -1 --name-only --diff-filter=A --pretty=format: \
-              | grep '^specs/.*\.yaml$' | head -1 || true)
-          fi
-          if [ -z "$SPEC_FILE" ]; then
-            SPEC_FILE=$(git log -5 --name-only --diff-filter=A --pretty=format: \
-              | grep '^specs/.*\.yaml$' | head -1 || true)
+            # Find the most recent commit that added a spec file
+            SPEC_FILE=$(git log --diff-filter=A --name-only --pretty=format: -- 'specs/*.yaml' \
+              | grep -v '^$' | head -1 || true)
           fi
           if [ -n "$SPEC_FILE" ]; then
             echo "Running with spec: $SPEC_FILE"
