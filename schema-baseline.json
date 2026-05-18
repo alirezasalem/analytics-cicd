@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-18T13:13:47.065Z",
+  "generated_at": "2026-05-18T13:25:31.089Z",
   "generated_by": "agents/schema-guardian/snapshot.js",
   "specs_dir": "specs/",
   "specs": {
@@ -142,6 +142,26 @@
             "currency",
             "items",
             "payment_type",
+            "value"
+          ],
+          "dataLayer": [
+            "ecommerce",
+            "event"
+          ]
+        }
+      }
+    },
+    "SPEC-2026-013-add_shipping_info": {
+      "filename": "SPEC-2026-013-add_shipping_info.yaml",
+      "spec_id": "SPEC-2026-013-add_shipping_info",
+      "version": "1.0.0",
+      "events": {
+        "add_shipping_info": {
+          "parameters": [
+            "coupon",
+            "currency",
+            "items",
+            "shipping_tier",
             "value"
           ],
           "dataLayer": [
