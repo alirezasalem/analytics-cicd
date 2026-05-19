@@ -27,31 +27,30 @@ test.describe('generate_lead', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto(process.env.TEST_URL);
-    // TODO: confirm selector with engineering - spec indicates NEEDS_CLARIFICATION for success state
-    // This event fires only after successful API response (200/201), not on button click alone
-    // Using best-guess selector for contact form submission
-    const formSelector = page.locator('form[data-form-id], form#contact-form, form.contact-form, form[action*="contact"]').first();
     
-    // Fill required form fields if present (using generic selectors)
-    const nameField = page.locator('input[name="name"], input[name="full_name"], input[placeholder*="name" i]').first();
+    // TODO: confirm selector with engineering - spec indicates NEEDS_CLARIFICATION for success state
+    // This assumes a contact form with submit button - adjust selector as needed
+    const formSelector = page.locator('form[data-form-id], form#contact-form, form.contact-form').first();
+    const submitButton = page.locator('button[type="submit"], input[type="submit"], button:has-text("Submit"), button:has-text("Send")').first();
+    
+    // Fill required form fields if present (using generic field detection)
+    const nameField = page.locator('input[name="name"], input[name="fullName"], input[id="name"]').first();
+    const emailField = page.locator('input[name="email"], input[type="email"], input[id="email"]').first();
+    const messageField = page.locator('textarea[name="message"], textarea[id="message"], textarea').first();
+    
     if (await nameField.isVisible({ timeout: 2000 }).catch(() => false)) {
       await nameField.fill('Test User');
     }
-    
-    const emailField = page.locator('input[type="email"], input[name="email"]').first();
     if (await emailField.isVisible({ timeout: 2000 }).catch(() => false)) {
       await emailField.fill('test@example.com');
     }
-    
-    const messageField = page.locator('textarea[name="message"], textarea[name="comments"], textarea').first();
     if (await messageField.isVisible({ timeout: 2000 }).catch(() => false)) {
       await messageField.fill('Test message for form submission');
     }
     
-    // Submit the form
-    const submitButton = page.locator('button[type="submit"], input[type="submit"], button:has-text("Submit"), button:has-text("Send")').first();
     await submitButton.click();
     
+    // Event should fire only after successful API response per gtm_notes
     eventPayload = await waitForDataLayerEvent(page, 'generate_lead');
   });
 
@@ -133,66 +132,66 @@ test.describe('generate_lead', () => {
     ).toBe(true);
   });
 
-  test('event_label matches form_name', async () => {
+  test('event_label matches form_name value', async () => {
     expect(
       eventPayload.event_label === eventPayload.form_name,
-      `event_label must match form_name, got event_label="${eventPayload.event_label}" but form_name="${eventPayload.form_name}"`
+      `event_label should match form_name. event_label: "${eventPayload.event_label}", form_name: "${eventPayload.form_name}"`
     ).toBe(true);
   });
 
-  test('no PII captured - form_id does not contain email pattern', async () => {
-    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+  test('PII mitigation - form_id does not contain email pattern', async () => {
+    const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
     expect(
-      !emailRegex.test(eventPayload.form_id),
-      `form_id must not contain email addresses (PII), got "${eventPayload.form_id}"`
+      !emailPattern.test(eventPayload.form_id),
+      `form_id must not contain email address, got "${eventPayload.form_id}"`
     ).toBe(true);
   });
 
-  test('no PII captured - form_name does not contain email pattern', async () => {
-    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+  test('PII mitigation - form_name does not contain email pattern', async () => {
+    const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
     expect(
-      !emailRegex.test(eventPayload.form_name),
-      `form_name must not contain email addresses (PII), got "${eventPayload.form_name}"`
+      !emailPattern.test(eventPayload.form_name),
+      `form_name must not contain email address, got "${eventPayload.form_name}"`
     ).toBe(true);
   });
 
-  test('no PII captured - lead_category does not contain email pattern', async () => {
-    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+  test('PII mitigation - lead_category does not contain email pattern', async () => {
+    const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
     expect(
-      !emailRegex.test(eventPayload.lead_category),
-      `lead_category must not contain email addresses (PII), got "${eventPayload.lead_category}"`
+      !emailPattern.test(eventPayload.lead_category),
+      `lead_category must not contain email address, got "${eventPayload.lead_category}"`
     ).toBe(true);
   });
 
-  test('no PII captured - form_id does not contain phone pattern', async () => {
-    const phoneRegex = /(\+?1?[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
+  test('PII mitigation - form_id does not contain phone pattern', async () => {
+    const phonePattern = /(\+?1?[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
     expect(
-      !phoneRegex.test(eventPayload.form_id),
-      `form_id must not contain phone numbers (PII), got "${eventPayload.form_id}"`
+      !phonePattern.test(eventPayload.form_id),
+      `form_id must not contain phone number, got "${eventPayload.form_id}"`
     ).toBe(true);
   });
 
-  test('no PII captured - form_name does not contain phone pattern', async () => {
-    const phoneRegex = /(\+?1?[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
+  test('PII mitigation - form_name does not contain phone pattern', async () => {
+    const phonePattern = /(\+?1?[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
     expect(
-      !phoneRegex.test(eventPayload.form_name),
-      `form_name must not contain phone numbers (PII), got "${eventPayload.form_name}"`
+      !phonePattern.test(eventPayload.form_name),
+      `form_name must not contain phone number, got "${eventPayload.form_name}"`
     ).toBe(true);
   });
 
-  test('no PII captured - lead_category does not contain phone pattern', async () => {
-    const phoneRegex = /(\+?1?[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
+  test('PII mitigation - lead_category does not contain phone pattern', async () => {
+    const phonePattern = /(\+?1?[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
     expect(
-      !phoneRegex.test(eventPayload.lead_category),
-      `lead_category must not contain phone numbers (PII), got "${eventPayload.lead_category}"`
+      !phonePattern.test(eventPayload.lead_category),
+      `lead_category must not contain phone number, got "${eventPayload.lead_category}"`
     ).toBe(true);
   });
 
-  test('event fires only once per successful submission', async ({ page }) => {
+  test('event fires only once per form submission', async ({ page }) => {
     const allEvents = await getAllDataLayerEvents(page, 'generate_lead');
     expect(
       allEvents.length === 1,
-      `generate_lead should fire exactly once per submission, but found ${allEvents.length} occurrences`
+      `generate_lead should fire exactly once per submission, found ${allEvents.length} events`
     ).toBe(true);
   });
 });
