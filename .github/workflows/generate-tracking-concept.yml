@@ -48,7 +48,7 @@ jobs:
             CHANGED=$(git log --diff-filter=A --name-only --pretty=format: -- 'specs/*.yaml' \
               | grep -v '^$' | head -1 || true)
           else
-            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+            CHANGED=$(git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} \
               | grep '^specs/.*\.yaml$' || true)
           fi
           echo "specs<<EOF" >> $GITHUB_OUTPUT
