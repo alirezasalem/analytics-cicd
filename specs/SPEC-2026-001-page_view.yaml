@@ -1,0 +1,44 @@
+spec_id: SPEC-2026-001-page_view
+version: 1.0.0
+status: draft
+owner: Product Analytics Team
+feature_brief_ref: FB-page-view-tracking
+generated_by: claude-api-agent
+created_at: 2026-01-27
+
+title: "Page View Tracking Implementation"
+platform: web
+priority: P0
+
+events:
+  - name: page_view
+    trigger:
+      action: page_load
+      selector: null
+      page_path: "*"
+    parameters:
+      page_location: "DL - page_location"
+      page_referrer: "DL - page_referrer"
+      page_title: "DL - page_title"
+      user_id: "DL - user_id"
+    dataLayer:
+      event: page_view
+      event_category: navigation
+      event_label: "{{DL - page_title}}"
+      page_location: "{{DL - page_location}}"
+      page_referrer: "{{DL - page_referrer}}"
+      page_title: "{{DL - page_title}}"
+      user_id: "{{DL - user_id}}"
+    ga4_mapping:
+      event_name: page_view
+      custom_dimensions:
+        cd_user_id: "{{DL - user_id}}"
+    gtm_notes: "Fire on DOM Ready and History Change triggers. Implement deduplication logic to prevent double-firing on SPA navigation. Strip PII from query parameters in page_location."
+
+acceptance_criteria:
+  - "Event fires once per page load and once per SPA route change"
+  - "No double-firing when user lands on SPA route initially"
+  - "PII automatically stripped from page_location query parameters"
+  - "page_title reflects updated DOM title after SPA navigation"
+  - "Verified in GA4 DebugView across desktop and mobile browsers"
+  - "Does not fire on fragment/anchor changes within same page"
