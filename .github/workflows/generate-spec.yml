@@ -44,7 +44,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "file=${{ inputs.brief_file }}" >> "$GITHUB_OUTPUT"
           else
-            CHANGED=$(git diff --name-only HEAD~1 HEAD -- 'feature-briefs/' | grep '^feature-briefs/FB-.*\.md$' | head -1)
+            CHANGED=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD -- 'feature-briefs/' | grep '^feature-briefs/FB-.*\.md$' | head -1)
             echo "Detected brief file: $CHANGED"
             if [[ -z "$CHANGED" ]]; then
               echo "ERROR: No FB-*.md brief file detected in this commit"
